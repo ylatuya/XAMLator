@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <RootNamespace>XAMLator.Client</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MonoDevelop.Addins" Version="0.4.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+  <Import Project="..\XAMLator.Core\XAMLator.Core.projitems" Label="Shared" Condition="Exists('..\XAMLator.Core\XAMLator.Core.projitems')" />
+  <Import Project="..\XAMLator.Client\XAMLator.Client.projitems" Label="Shared" Condition="Exists('..\XAMLator.Client\XAMLator.Client.projitems')" />
+</Project>

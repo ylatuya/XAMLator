@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>{188F8020-6474-43BA-A6E7-0947C385B54C}</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>XAMLator.Client</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)XAMLator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DiscoveryReceiver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DeviceInfo.cs" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>{C6C57B07-6E31-415E-BBD7-10A598C4D370}</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>XAMLator.Server</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)DiscoveryBroadcaster.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Previewer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PreviewPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Printer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PreviewServer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)VM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpServer\HttpHost.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpServer\HttpRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpServer\HttpResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpServer\IRequestProcessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpServer\RequestProcessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpServer\Route.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IPreviewer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ErrorPage.xaml.cs">
+      <DependentUpon>ErrorPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)ErrorViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)HttpServer\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)ErrorPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>
