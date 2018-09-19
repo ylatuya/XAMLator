@@ -21,7 +21,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace XAMLator.Server.HttpServer
+namespace XAMLator.HttpServer
 {
     /// <summary>
     /// Process request based on their URL and the http method.

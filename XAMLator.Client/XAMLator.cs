@@ -17,9 +17,10 @@ namespace XAMLator.Client
 
         XAMLatorMonitor()
         {
+            clients = new Dictionary<DeviceInfo, HttpClient>();
             discovery = new DiscoveryReceiver();
             discovery.DevicesChanged += HandleDiscoveryDevicesChanged;
-            clients = new Dictionary<DeviceInfo, HttpClient>();
+            discovery.Start();
         }
 
         public static XAMLatorMonitor Instance

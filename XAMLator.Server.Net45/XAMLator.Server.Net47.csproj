@@ -8,7 +8,7 @@
     <ProjectGuid>{E3F80ADC-71F8-454E-BA3B-87BD0D78B051}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>XAMLator.Server.Net45</RootNamespace>
-    <AssemblyName>XAMLator.Server.Net45</AssemblyName>
+    <AssemblyName>XAMLator.Server</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -49,6 +49,7 @@
     <Reference Include="Xamarin.Forms.Xaml">
       <HintPath>..\packages\Xamarin.Forms.3.0.0.446417\lib\netstandard2.0\Xamarin.Forms.Xaml.dll</HintPath>
     </Reference>
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

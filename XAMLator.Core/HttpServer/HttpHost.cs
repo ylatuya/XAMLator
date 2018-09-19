@@ -20,10 +20,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XAMLator.Server.HttpServer
+namespace XAMLator.HttpServer
 {
     /// <summary>
     /// Http host that handles HTTP request and dispatch them to a <see cref="IRequestProcessor"/>.
@@ -45,6 +46,35 @@ namespace XAMLator.Server.HttpServer
         {
             this.baseUri = baseUri;
             this.requestProcessor = requestProcessor;
+        }
+
+        public static async Task<HttpHost> StartServer(IRequestProcessor processor, int port, int portsRange)
+        {
+            HttpHost host = null;
+
+            for (int i = 0; i < portsRange; i++)
+            {
+                try
+                {
+                    host = new HttpHost($"http://+:{port}/", processor);
+                    await host.StartListening();
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    if (ex is SocketException || ex is HttpListenerException)
+                    {
+                        host = null;
+                        port++;
+                        Log.Exception(ex);
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+            return host;
         }
 
         /// <summary>

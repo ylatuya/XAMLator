@@ -22,7 +22,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace XAMLator.Server.HttpServer
+namespace XAMLator.HttpServer
 {
     /// <summary>
     /// Route that binds a handler for a resource based in the Http method and the path of the request.

@@ -6,6 +6,10 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using MonoDevelop.Ide;
+using System.Threading.Tasks;
+using XAMLator.HttpServer;
+using System.IO;
+using System.Text;
 
 namespace XAMLator.Client
 {
@@ -13,35 +17,21 @@ namespace XAMLator.Client
     /// Listen for <see cref="DiscoveryBroadcast"/> messages published by devices
     /// announcing the XAMLator service.
     /// </summary>
-    public class DiscoveryReceiver
+    public class DiscoveryReceiver : RequestProcessor
     {
         public event EventHandler DevicesChanged;
 
-        readonly UdpClient listener;
         readonly Dictionary<DeviceInfo, DiscoveryBroadcast> devices;
+        UdpClient listener;
         Thread thread;
         bool running;
-
+        HttpHost host;
+        int port;
 
         public DiscoveryReceiver()
         {
             devices = new Dictionary<DeviceInfo, DiscoveryBroadcast>();
-            try
-            {
-                listener = new UdpClient(Constants.DISCOVERY_BROADCAST_RECEIVER_PORT, AddressFamily.InterNetwork);
-            }
-            catch (Exception ex)
-            {
-                MessageService.ShowError($"XAMLator: Failed to start the discovery receiver", ex);
-                Debug.WriteLine("XAMLator: Failed to listen: " + ex);
-                listener = null;
-            }
-            if (listener != null)
-            {
-                thread = new Thread(Run);
-                thread.Start();
-            }
-            running = true;
+            Post["/register"] = HandleRegisterDevice;
         }
 
         /// <summary>
@@ -58,9 +48,37 @@ namespace XAMLator.Client
             }
         }
 
+        public async Task<bool> Start()
+        {
+            host = await HttpHost.StartServer(this, Constants.DEFAULT_CLIENT_PORT, 1);
+            if (host == null)
+            {
+                MessageService.ShowError($"XAMLator: Failed to start the server. There seems to be another instance of VS4MAC is running!");
+                return false;
+            }
+            try
+            {
+                listener = new UdpClient(Constants.DISCOVERY_BROADCAST_RECEIVER_PORT, AddressFamily.InterNetwork);
+            }
+            catch (Exception ex)
+            {
+                MessageService.ShowError($"XAMLator: Failed to start the discovery receiver", ex);
+                Debug.WriteLine("XAMLator: Failed to listen: " + ex);
+                listener = null;
+            }
+            if (listener != null)
+            {
+                thread = new Thread(Run);
+                thread.Start();
+            }
+            running = true;
+            return true;
+        }
+
         public void Stop()
         {
             running = false;
+            host.StopListening();
             thread = null;
         }
 
@@ -82,13 +100,13 @@ namespace XAMLator.Client
         void Listen()
         {
             var broadcastEndpoint = new IPEndPoint(IPAddress.Any, Constants.DISCOVERY_BROADCAST_RECEIVER_PORT);
-
             var bytes = listener.Receive(ref broadcastEndpoint);
+            var json = Encoding.UTF8.GetString(bytes);
+            AddDevice(Serializer.DeserializeJson<DiscoveryBroadcast>(json));
+        }
 
-            var json = System.Text.Encoding.UTF8.GetString(bytes);
-
-            var newBroadcast = Newtonsoft.Json.JsonConvert.DeserializeObject<DiscoveryBroadcast>(json);
-
+        void AddDevice(DiscoveryBroadcast newBroadcast)
+        {
             bool changed = false;
             lock (devices)
             {
@@ -116,6 +134,16 @@ namespace XAMLator.Client
             {
                 DevicesChanged?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        async Task<HttpResponse> HandleRegisterDevice(HttpRequest request)
+        {
+            JsonHttpResponse response = new JsonHttpResponse();
+
+            StreamReader sr = new StreamReader(request.Body, Encoding.UTF8);
+            string json = await sr.ReadToEndAsync();
+            AddDevice(Serializer.DeserializeJson<DiscoveryBroadcast>(json));
+            return response;
         }
     }
 }

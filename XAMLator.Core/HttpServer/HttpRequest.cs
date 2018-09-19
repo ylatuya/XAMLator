@@ -21,7 +21,7 @@ using System.Dynamic;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
-namespace XAMLator.Server.HttpServer
+namespace XAMLator.HttpServer
 {
     /// <summary>
     /// Http request.

@@ -17,7 +17,7 @@
 //
 using System.Threading.Tasks;
 
-namespace XAMLator.Server.HttpServer
+namespace XAMLator.HttpServer
 {
     /// <summary>
     /// Process HTTP request from the <see cref="HttpHost"/>.

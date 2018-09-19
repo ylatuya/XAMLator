@@ -30,10 +30,10 @@ using Mono.Addins.Description;
 [assembly: Addin(
     "XAMLator.Client.MonoDevelop",
     Namespace = "XAMLator.Client.MonoDevelop",
-    Version = "1.0"
+    Version = "1.0.1"
 )]
 
 [assembly: AddinName("XAMLator.Client.MonoDevelop")]
 [assembly: AddinCategory("IDE extensions")]
 [assembly: AddinDescription("XAMLator.Client.MonoDevelop")]
-[assembly: AddinAuthor("Mikayla Hutchinson")]
+[assembly: AddinAuthor("Andoni Morales Fluendo S.A.")]

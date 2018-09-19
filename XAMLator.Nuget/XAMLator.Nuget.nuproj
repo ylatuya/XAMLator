@@ -38,7 +38,7 @@
     </ProjectReference>
     <ProjectReference Include="..\XAMLator.Server.Net45\XAMLator.Server.Net45.csproj">
       <Project>{E3F80ADC-71F8-454E-BA3B-87BD0D78B051}</Project>
-      <Name>XAMLator.Server.Net45</Name>
+      <Name>XAMLator.Server.Net47</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

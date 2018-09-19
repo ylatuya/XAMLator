@@ -3,6 +3,7 @@ using Gtk;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.GTK;
 using Xamarin.Forms.Platform.GTK.Helpers;
+using XAMLator.Server;
 
 namespace XAMLator.SampleApp
 {
@@ -19,7 +20,7 @@ namespace XAMLator.SampleApp
             window.LoadApplication(app);
             window.SetApplicationTitle("XAMLator Sample App");
             window.Show();
-            Server.PreviewServer.Run();
+            PreviewServer.Run();
             Gtk.Application.Run();
         }
     }

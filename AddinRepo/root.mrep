@@ -6,9 +6,9 @@
       <Id>XAMLator.Client.MonoDevelop</Id>
       <Namespace>XAMLator.Client.MonoDevelop</Namespace>
       <Name>XAMLator.Client.MonoDevelop</Name>
-      <Version>1.0</Version>
+      <Version>1.0.1</Version>
       <BaseVersion />
-      <Author>Mikayla Hutchinson</Author>
+      <Author>Andoni Morales Fluendo S.A.</Author>
       <Copyright />
       <Url />
       <Description>XAMLator.Client.MonoDevelop</Description>
@@ -16,7 +16,7 @@
       <Dependencies />
       <OptionalDependencies />
       <Properties>
-        <Property name="DownloadSize">215261</Property>
+        <Property name="DownloadSize">222585</Property>
       </Properties>
     </Addin>
   </Addin>

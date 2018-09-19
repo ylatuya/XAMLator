@@ -15,20 +15,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Printer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PreviewServer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)VM.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HttpServer\HttpHost.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HttpServer\HttpRequest.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HttpServer\HttpResponse.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HttpServer\IRequestProcessor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HttpServer\RequestProcessor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HttpServer\Route.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IPreviewer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ErrorPage.xaml.cs">
       <DependentUpon>ErrorPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)ErrorViewModel.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)HttpServer\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)ErrorPage.xaml">
