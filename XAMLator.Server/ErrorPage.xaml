@@ -29,6 +29,7 @@
                 Text="{Binding Title}"/>
               <Label
                 Margin="20"
+                HeightRequest="200"
                 BackgroundColor="White"
                 HorizontalOptions="FillAndExpand"
                 TextColor="Black"
