@@ -9,7 +9,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "XAMLator.Core", "XAMLator.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XAMLator.Server.iOS", "XAMLator.Server.iOS\XAMLator.Server.iOS.csproj", "{9F60986F-4549-436A-9467-8718FFE84CCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XAMLator.Server.Net47", "XAMLator.Server.Net45\XAMLator.Server.Net47.csproj", "{E3F80ADC-71F8-454E-BA3B-87BD0D78B051}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XAMLator.Server.Net47", "XAMLator.Server.Net47\XAMLator.Server.Net47.csproj", "{E3F80ADC-71F8-454E-BA3B-87BD0D78B051}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XAMLator.Server.Droid", "XAMLator.Server.Droid\XAMLator.Server.Droid.csproj", "{8634D953-84BF-4BBD-873B-B4339BEEA7BF}"
 EndProject

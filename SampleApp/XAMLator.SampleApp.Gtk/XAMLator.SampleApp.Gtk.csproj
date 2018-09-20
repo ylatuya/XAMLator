@@ -65,7 +65,7 @@
     <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\XAMLator.Server.Net45\XAMLator.Server.Net47.csproj">
+    <ProjectReference Include="..\..\XAMLator.Server.Net47\XAMLator.Server.Net47.csproj">
       <Project>{E3F80ADC-71F8-454E-BA3B-87BD0D78B051}</Project>
       <Name>XAMLator.Server.Net47</Name>
     </ProjectReference>
