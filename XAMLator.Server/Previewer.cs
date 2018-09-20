@@ -12,9 +12,9 @@ namespace XAMLator.Server
     public class Previewer : IPreviewer
     {
         bool presented;
-        PreviewPage previewPage;
-        ErrorPage errorPage;
-        Dictionary<Type, object> viewModelsMapping;
+        protected PreviewPage previewPage;
+        protected ErrorPage errorPage;
+        protected Dictionary<Type, object> viewModelsMapping;
 
         public Previewer(Dictionary<Type, object> viewModelsMapping)
         {
@@ -24,7 +24,7 @@ namespace XAMLator.Server
                 Text = "Quit live preview",
                 Command = new Command(() =>
                 {
-                    Application.Current.MainPage.Navigation.PopModalAsync();
+                    HidePreviewPage(previewPage);
                     presented = false;
                 }),
             };
@@ -36,7 +36,7 @@ namespace XAMLator.Server
         /// Preview the specified evaluation result.
         /// </summary>
         /// <param name="res">Res.</param>
-        public async Task Preview(EvalResult res)
+        public virtual async Task Preview(EvalResult res)
         {
             Log.Information($"Previewing {res.GetType()}");
             Page page = res.Result as Page;
@@ -50,21 +50,36 @@ namespace XAMLator.Server
                 {
                     page.BindingContext = viewModel;
                 }
-                if (!presented)
-                {
-                    await Application.Current.MainPage.Navigation.PushModalAsync(previewPage, false);
-                    presented = true;
-                }
+                await EnsurePresented();
                 NavigationPage.SetHasNavigationBar(previewPage, true);
                 previewPage.ChangePage(page);
             }
         }
 
-        public Task NotifyError(ErrorViewModel errorViewModel)
+        public virtual async Task NotifyError(ErrorViewModel errorViewModel)
         {
+            await EnsurePresented();
             errorPage.BindingContext = errorViewModel;
             previewPage.ChangePage(errorPage);
-            return Task.FromResult(true);
+        }
+
+        protected virtual Task ShowPreviewPage(Page previewPage)
+        {
+            return Application.Current.MainPage.Navigation.PushModalAsync(previewPage, false);
+        }
+
+        protected virtual Task HidePreviewPage(Page previewPage)
+        {
+            return Application.Current.MainPage.Navigation.PopModalAsync();
+        }
+
+        protected async Task EnsurePresented()
+        {
+            if (!presented)
+            {
+                await ShowPreviewPage(previewPage);
+                presented = true;
+            }
         }
     }
 }
