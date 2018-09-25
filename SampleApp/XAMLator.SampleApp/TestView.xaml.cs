@@ -4,11 +4,11 @@ using Xamarin.Forms;
 
 namespace XAMLator.SampleApp
 {
-    public partial class TestView : ContentView
-    {
-        public TestView()
-        {
-            InitializeComponent();
-        }
-    }
+	public partial class TestView : ContentView
+	{
+		public TestView()
+		{
+			InitializeComponent();
+		}
+	}
 }

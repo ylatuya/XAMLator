@@ -2,7 +2,7 @@
 // AddinInfo.cs
 //
 // Author:
-//       Mikayla Hutchinson <m.j.hutchinson@gmail.com>
+//	   Mikayla Hutchinson <m.j.hutchinson@gmail.com>
 //
 // Copyright (c) 2017 Microsoft Corp.
 //
@@ -28,9 +28,9 @@ using Mono.Addins;
 using Mono.Addins.Description;
 
 [assembly: Addin(
-    "XAMLator.Client.MonoDevelop",
-    Namespace = "XAMLator.Client.MonoDevelop",
-    Version = "1.0.1"
+	"XAMLator.Client.MonoDevelop",
+	Namespace = "XAMLator.Client.MonoDevelop",
+	Version = "1.0.1"
 )]
 
 [assembly: AddinName("XAMLator.Client.MonoDevelop")]

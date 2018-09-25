@@ -23,65 +23,65 @@ using System.Threading.Tasks;
 
 namespace XAMLator.HttpServer
 {
-    /// <summary>
-    /// Process request based on their URL and the http method.
-    /// </summary>
-    public abstract class RequestProcessor : IRequestProcessor
-    {
-        const string GET = "GET";
-        const string POST = "POST";
-        const string PUT = "PUT";
+	/// <summary>
+	/// Process request based on their URL and the http method.
+	/// </summary>
+	public abstract class RequestProcessor : IRequestProcessor
+	{
+		const string GET = "GET";
+		const string POST = "POST";
+		const string PUT = "PUT";
 
-        readonly List<Route> routes = new List<Route>();
+		readonly List<Route> routes = new List<Route>();
 
-        public async Task<HttpResponse> HandleRequest(HttpRequest request)
-        {
-            var route = routes.FirstOrDefault(r => r.IsMatch(request));
-            if (route == null)
-            {
-                return new JsonHttpResponse { StatusCode = HttpStatusCode.NotFound };
-            }
-            return await route.Invoke(request);
-        }
+		public async Task<HttpResponse> HandleRequest(HttpRequest request)
+		{
+			var route = routes.FirstOrDefault(r => r.IsMatch(request));
+			if (route == null)
+			{
+				return new JsonHttpResponse { StatusCode = HttpStatusCode.NotFound };
+			}
+			return await route.Invoke(request);
+		}
 
-        /// <summary>
-        /// Callbacks router for Get requests
-        /// </summary>
-        protected RouteBuilder Get { get { return new RouteBuilder(GET, this); } }
+		/// <summary>
+		/// Callbacks router for Get requests
+		/// </summary>
+		protected RouteBuilder Get { get { return new RouteBuilder(GET, this); } }
 
-        /// <summary>
-        /// Callbacks router for Post requests
-        /// </summary>
-        protected RouteBuilder Post { get { return new RouteBuilder(POST, this); } }
+		/// <summary>
+		/// Callbacks router for Post requests
+		/// </summary>
+		protected RouteBuilder Post { get { return new RouteBuilder(POST, this); } }
 
-        /// <summary>
-        /// Callbacks router for Put requests
-        /// </summary>
-        protected RouteBuilder Put { get { return new RouteBuilder(PUT, this); } }
+		/// <summary>
+		/// Callbacks router for Put requests
+		/// </summary>
+		protected RouteBuilder Put { get { return new RouteBuilder(PUT, this); } }
 
-        protected class RouteBuilder
-        {
-            readonly string method;
-            readonly RequestProcessor requestProcessor;
+		protected class RouteBuilder
+		{
+			readonly string method;
+			readonly RequestProcessor requestProcessor;
 
-            public RouteBuilder(string method, RequestProcessor requestProcessor)
-            {
-                this.method = method;
-                this.requestProcessor = requestProcessor;
-            }
+			public RouteBuilder(string method, RequestProcessor requestProcessor)
+			{
+				this.method = method;
+				this.requestProcessor = requestProcessor;
+			}
 
-            public Func<HttpRequest, Task<HttpResponse>> this[string path]
-            {
-                set
-                {
-                    AddRoute(path, value);
-                }
-            }
+			public Func<HttpRequest, Task<HttpResponse>> this[string path]
+			{
+				set
+				{
+					AddRoute(path, value);
+				}
+			}
 
-            void AddRoute(string path, Func<HttpRequest, Task<HttpResponse>> value)
-            {
-                requestProcessor.routes.Add(new Route(method, path, value));
-            }
-        }
-    }
+			void AddRoute(string path, Func<HttpRequest, Task<HttpResponse>> value)
+			{
+				requestProcessor.routes.Add(new Route(method, path, value));
+			}
+		}
+	}
 }

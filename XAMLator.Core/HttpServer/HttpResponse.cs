@@ -24,70 +24,70 @@ using System.Threading.Tasks;
 
 namespace XAMLator.HttpServer
 {
-    /// <summary>
-    /// Http response.
-    /// </summary>
-    public abstract class HttpResponse
-    {
-        public HttpResponse()
-        {
-            Stream = WriteResponse;
-            Headers = new Dictionary<string, string>();
-        }
+	/// <summary>
+	/// Http response.
+	/// </summary>
+	public abstract class HttpResponse
+	{
+		public HttpResponse()
+		{
+			Stream = WriteResponse;
+			Headers = new Dictionary<string, string>();
+		}
 
-        /// <summary>
-        /// Gets the response data.
-        /// </summary>
-        /// <value>The response data.</value>
-        public Func<Stream, Task> Stream { get; set; }
+		/// <summary>
+		/// Gets the response data.
+		/// </summary>
+		/// <value>The response data.</value>
+		public Func<Stream, Task> Stream { get; set; }
 
-        /// <summary>
-        /// Gets or sets the content-type of the response
-        /// </summary>
-        /// <value>The content-type.</value>
-        public string ContentType { get; set; }
+		/// <summary>
+		/// Gets or sets the content-type of the response
+		/// </summary>
+		/// <value>The content-type.</value>
+		public string ContentType { get; set; }
 
-        /// <summary>
-        /// Gets or sets the status code of the response.
-        /// </summary>
-        /// <value>The status code.</value>
-        public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.OK;
+		/// <summary>
+		/// Gets or sets the status code of the response.
+		/// </summary>
+		/// <value>The status code.</value>
+		public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.OK;
 
-        /// <summary>
-        /// Gets the headers of the request.
-        /// </summary>
-        /// <value>The headers.</value>
-        public Dictionary<string, string> Headers { get; private set; }
+		/// <summary>
+		/// Gets the headers of the request.
+		/// </summary>
+		/// <value>The headers.</value>
+		public Dictionary<string, string> Headers { get; private set; }
 
-        protected abstract Task WriteResponse(Stream stream);
-    }
+		protected abstract Task WriteResponse(Stream stream);
+	}
 
-    /// <summary>
-    /// JSON Http response.
-    /// </summary>
-    public class JsonHttpResponse : HttpResponse
-    {
-        public JsonHttpResponse()
-        {
-            ContentType = "application/json";
-        }
+	/// <summary>
+	/// JSON Http response.
+	/// </summary>
+	public class JsonHttpResponse : HttpResponse
+	{
+		public JsonHttpResponse()
+		{
+			ContentType = "application/json";
+		}
 
-        /// <summary>
-        /// Gets the response data.
-        /// </summary>
-        /// <value>The response data.</value>
-        public object Data { get; set; }
+		/// <summary>
+		/// Gets the response data.
+		/// </summary>
+		/// <value>The response data.</value>
+		public object Data { get; set; }
 
-        protected override async Task WriteResponse(Stream stream)
-        {
-            if (Data != null)
-            {
-                var json = Serializer.SerializeJson(Data);
-                using (var sw = new StreamWriter(stream, new UTF8Encoding(false)))
-                {
-                    await sw.WriteAsync(json);
-                }
-            }
-        }
-    }
+		protected override async Task WriteResponse(Stream stream)
+		{
+			if (Data != null)
+			{
+				var json = Serializer.SerializeJson(Data);
+				using (var sw = new StreamWriter(stream, new UTF8Encoding(false)))
+				{
+					await sw.WriteAsync(json);
+				}
+			}
+		}
+	}
 }

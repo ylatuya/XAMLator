@@ -19,16 +19,16 @@ using System.Threading.Tasks;
 
 namespace XAMLator.HttpServer
 {
-    /// <summary>
-    /// Process HTTP request from the <see cref="HttpHost"/>.
-    /// </summary>
-    public interface IRequestProcessor
-    {
-        /// <summary>
-        /// Handles the Http request.
-        /// </summary>
-        /// <returns>The response.</returns>
-        /// <param name="request">The request.</param>
-        Task<HttpResponse> HandleRequest(HttpRequest request);
-    }
+	/// <summary>
+	/// Process HTTP request from the <see cref="HttpHost"/>.
+	/// </summary>
+	public interface IRequestProcessor
+	{
+		/// <summary>
+		/// Handles the Http request.
+		/// </summary>
+		/// <returns>The response.</returns>
+		/// <param name="request">The request.</param>
+		Task<HttpResponse> HandleRequest(HttpRequest request);
+	}
 }

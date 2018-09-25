@@ -30,231 +30,231 @@ using System;
 
 namespace XAMLator
 {
-    public static class ConsoleCrayon
-    {
+	public static class ConsoleCrayon
+	{
 
-        #region Public API
+		#region Public API
 
-        static ConsoleColor foreground_color;
+		static ConsoleColor foreground_color;
 
-        public static ConsoleColor ForegroundColor
-        {
-            get
-            {
-                return foreground_color;
-            }
-            set
-            {
-                foreground_color = value;
-                SetColor(foreground_color, true);
-            }
-        }
+		public static ConsoleColor ForegroundColor
+		{
+			get
+			{
+				return foreground_color;
+			}
+			set
+			{
+				foreground_color = value;
+				SetColor(foreground_color, true);
+			}
+		}
 
-        static ConsoleColor background_color;
+		static ConsoleColor background_color;
 
-        public static ConsoleColor BackgroundColor
-        {
-            get
-            {
-                return background_color;
-            }
-            set
-            {
-                background_color = value;
-                SetColor(background_color, false);
-            }
-        }
+		public static ConsoleColor BackgroundColor
+		{
+			get
+			{
+				return background_color;
+			}
+			set
+			{
+				background_color = value;
+				SetColor(background_color, false);
+			}
+		}
 
-        public static void ResetColor()
-        {
-            if (XtermColors)
-            {
-                Console.Write(GetAnsiResetControlCode());
-            }
-            else if (Environment.OSVersion.Platform != PlatformID.Unix && !RuntimeIsMono)
-            {
+		public static void ResetColor()
+		{
+			if (XtermColors)
+			{
+				Console.Write(GetAnsiResetControlCode());
+			}
+			else if (Environment.OSVersion.Platform != PlatformID.Unix && !RuntimeIsMono)
+			{
 #if !__ANDROID__ && !__IOS__
-                Console.ResetColor();
+				Console.ResetColor();
 #endif
-            }
-        }
+			}
+		}
 
-        private static void SetColor(ConsoleColor color, bool isForeground)
-        {
-            if (color < ConsoleColor.Black || color > ConsoleColor.White)
-            {
-                throw new ArgumentOutOfRangeException("color", "Not a ConsoleColor value.");
-            }
+		private static void SetColor(ConsoleColor color, bool isForeground)
+		{
+			if (color < ConsoleColor.Black || color > ConsoleColor.White)
+			{
+				throw new ArgumentOutOfRangeException("color", "Not a ConsoleColor value.");
+			}
 
-            if (XtermColors)
-            {
-                Console.Write(GetAnsiColorControlCode(color, isForeground));
-            }
-            else if (Environment.OSVersion.Platform != PlatformID.Unix && !RuntimeIsMono)
-            {
+			if (XtermColors)
+			{
+				Console.Write(GetAnsiColorControlCode(color, isForeground));
+			}
+			else if (Environment.OSVersion.Platform != PlatformID.Unix && !RuntimeIsMono)
+			{
 #if !__ANDROID__ && !__IOS__
-                if (isForeground)
-                {
-                    Console.ForegroundColor = color;
-                }
-                else
-                {
-                    Console.BackgroundColor = color;
-                }
+				if (isForeground)
+				{
+					Console.ForegroundColor = color;
+				}
+				else
+				{
+					Console.BackgroundColor = color;
+				}
 #endif
-            }
-        }
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region Ansi/VT Code Calculation
+		#region Ansi/VT Code Calculation
 
-        // Modified from Mono's System.TermInfoDriver
-        // License: MIT/X11
-        // Authors: Gonzalo Paniagua Javier <gonzalo@ximian.com>
-        // (C) 2005-2006 Novell, Inc <http://www.novell.com>
+		// Modified from Mono's System.TermInfoDriver
+		// License: MIT/X11
+		// Authors: Gonzalo Paniagua Javier <gonzalo@ximian.com>
+		// (C) 2005-2006 Novell, Inc <http://www.novell.com>
 
-        private static int TranslateColor(ConsoleColor desired, out bool light)
-        {
-            light = false;
-            switch (desired)
-            {
-                // Dark colors
-                case ConsoleColor.Black:
-                    return 0;
-                case ConsoleColor.DarkRed:
-                    return 1;
-                case ConsoleColor.DarkGreen:
-                    return 2;
-                case ConsoleColor.DarkYellow:
-                    return 3;
-                case ConsoleColor.DarkBlue:
-                    return 4;
-                case ConsoleColor.DarkMagenta:
-                    return 5;
-                case ConsoleColor.DarkCyan:
-                    return 6;
-                case ConsoleColor.Gray:
-                    return 7;
+		private static int TranslateColor(ConsoleColor desired, out bool light)
+		{
+			light = false;
+			switch (desired)
+			{
+				// Dark colors
+				case ConsoleColor.Black:
+					return 0;
+				case ConsoleColor.DarkRed:
+					return 1;
+				case ConsoleColor.DarkGreen:
+					return 2;
+				case ConsoleColor.DarkYellow:
+					return 3;
+				case ConsoleColor.DarkBlue:
+					return 4;
+				case ConsoleColor.DarkMagenta:
+					return 5;
+				case ConsoleColor.DarkCyan:
+					return 6;
+				case ConsoleColor.Gray:
+					return 7;
 
-                // Light colors
-                case ConsoleColor.DarkGray:
-                    light = true;
-                    return 0;
-                case ConsoleColor.Red:
-                    light = true;
-                    return 1;
-                case ConsoleColor.Green:
-                    light = true;
-                    return 2;
-                case ConsoleColor.Yellow:
-                    light = true;
-                    return 3;
-                case ConsoleColor.Blue:
-                    light = true;
-                    return 4;
-                case ConsoleColor.Magenta:
-                    light = true;
-                    return 5;
-                case ConsoleColor.Cyan:
-                    light = true;
-                    return 6;
-                case ConsoleColor.White:
-                default:
-                    light = true;
-                    return 7;
-            }
-        }
+				// Light colors
+				case ConsoleColor.DarkGray:
+					light = true;
+					return 0;
+				case ConsoleColor.Red:
+					light = true;
+					return 1;
+				case ConsoleColor.Green:
+					light = true;
+					return 2;
+				case ConsoleColor.Yellow:
+					light = true;
+					return 3;
+				case ConsoleColor.Blue:
+					light = true;
+					return 4;
+				case ConsoleColor.Magenta:
+					light = true;
+					return 5;
+				case ConsoleColor.Cyan:
+					light = true;
+					return 6;
+				case ConsoleColor.White:
+				default:
+					light = true;
+					return 7;
+			}
+		}
 
-        private static string GetAnsiColorControlCode(ConsoleColor color, bool isForeground)
-        {
-            // lighter fg colours are 90 -> 97 rather than 30 -> 37
-            // lighter bg colours are 100 -> 107 rather than 40 -> 47
-            bool light;
-            int code = TranslateColor(color, out light) + (isForeground ? 30 : 40) + (light ? 60 : 0);
-            return String.Format("\x001b[{0}m", code);
-        }
+		private static string GetAnsiColorControlCode(ConsoleColor color, bool isForeground)
+		{
+			// lighter fg colours are 90 -> 97 rather than 30 -> 37
+			// lighter bg colours are 100 -> 107 rather than 40 -> 47
+			bool light;
+			int code = TranslateColor(color, out light) + (isForeground ? 30 : 40) + (light ? 60 : 0);
+			return String.Format("\x001b[{0}m", code);
+		}
 
-        private static string GetAnsiResetControlCode()
-        {
-            return "\x001b[0m";
-        }
+		private static string GetAnsiResetControlCode()
+		{
+			return "\x001b[0m";
+		}
 
-        #endregion
+		#endregion
 
-        #region xterm Detection
+		#region xterm Detection
 
-        private static bool? xterm_colors = null;
+		private static bool? xterm_colors = null;
 
-        public static bool XtermColors
-        {
-            get
-            {
-                if (xterm_colors == null)
-                {
-                    DetectXtermColors();
-                }
+		public static bool XtermColors
+		{
+			get
+			{
+				if (xterm_colors == null)
+				{
+					DetectXtermColors();
+				}
 
-                return xterm_colors.Value;
-            }
-        }
+				return xterm_colors.Value;
+			}
+		}
 
-        [System.Runtime.InteropServices.DllImport("libc", EntryPoint = "isatty")]
-        private extern static int _isatty(int fd);
+		[System.Runtime.InteropServices.DllImport("libc", EntryPoint = "isatty")]
+		private extern static int _isatty(int fd);
 
-        private static bool isatty(int fd)
-        {
-            try
-            {
-                return _isatty(fd) == 1;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+		private static bool isatty(int fd)
+		{
+			try
+			{
+				return _isatty(fd) == 1;
+			}
+			catch
+			{
+				return false;
+			}
+		}
 
-        private static void DetectXtermColors()
-        {
-            bool _xterm_colors = false;
+		private static void DetectXtermColors()
+		{
+			bool _xterm_colors = false;
 
-            switch (Environment.GetEnvironmentVariable("TERM"))
-            {
-                case "xterm":
-                case "rxvt":
-                case "rxvt-unicode":
-                    if (Environment.GetEnvironmentVariable("COLORTERM") != null)
-                    {
-                        _xterm_colors = true;
-                    }
-                    break;
-                case "xterm-color":
-                    _xterm_colors = true;
-                    break;
-            }
+			switch (Environment.GetEnvironmentVariable("TERM"))
+			{
+				case "xterm":
+				case "rxvt":
+				case "rxvt-unicode":
+					if (Environment.GetEnvironmentVariable("COLORTERM") != null)
+					{
+						_xterm_colors = true;
+					}
+					break;
+				case "xterm-color":
+					_xterm_colors = true;
+					break;
+			}
 
-            xterm_colors = _xterm_colors && isatty(1) && isatty(2);
-        }
+			xterm_colors = _xterm_colors && isatty(1) && isatty(2);
+		}
 
-        #endregion
+		#endregion
 
-        #region Runtime Detection
+		#region Runtime Detection
 
-        private static bool? runtime_is_mono;
+		private static bool? runtime_is_mono;
 
-        public static bool RuntimeIsMono
-        {
-            get
-            {
-                if (runtime_is_mono == null)
-                {
-                    runtime_is_mono = Type.GetType("System.MonoType") != null;
-                }
+		public static bool RuntimeIsMono
+		{
+			get
+			{
+				if (runtime_is_mono == null)
+				{
+					runtime_is_mono = Type.GetType("System.MonoType") != null;
+				}
 
-                return runtime_is_mono.Value;
-            }
-        }
+				return runtime_is_mono.Value;
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

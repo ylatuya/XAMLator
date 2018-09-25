@@ -34,121 +34,121 @@ using System.Threading;
 
 namespace XAMLator
 {
-    public static class Log
-    {
-        static readonly object writeLock = new object();
+	public static class Log
+	{
+		static readonly object writeLock = new object();
 
-        public enum LogEntryType
-        {
-            Debug,
-            Warning,
-            Error,
-            Information
-        }
+		public enum LogEntryType
+		{
+			Debug,
+			Warning,
+			Error,
+			Information
+		}
 
-        public static bool Debugging { get; set; }
+		public static bool Debugging { get; set; }
 
-        public static void Debug(string message)
-        {
-            if (Debugging)
-            {
-                Commit(LogEntryType.Debug, message);
-            }
-        }
+		public static void Debug(string message)
+		{
+			if (Debugging)
+			{
+				Commit(LogEntryType.Debug, message);
+			}
+		}
 
-        public static void Information(string message) => Commit(LogEntryType.Information, message);
+		public static void Information(string message) => Commit(LogEntryType.Information, message);
 
-        public static void Warning(string message) => Commit(LogEntryType.Warning, message);
+		public static void Warning(string message) => Commit(LogEntryType.Warning, message);
 
-        public static void Error(string message) => Commit(LogEntryType.Warning, message);
+		public static void Error(string message) => Commit(LogEntryType.Warning, message);
 
-        public static void Exception(Exception e)
-        {
-            Stack<Exception> exception_chain = new Stack<Exception>();
-            StringBuilder builder = new StringBuilder();
+		public static void Exception(Exception e)
+		{
+			Stack<Exception> exception_chain = new Stack<Exception>();
+			StringBuilder builder = new StringBuilder();
 
-            while (e != null)
-            {
-                exception_chain.Push(e);
-                e = e.InnerException;
-            }
+			while (e != null)
+			{
+				exception_chain.Push(e);
+				e = e.InnerException;
+			}
 
-            while (exception_chain.Count > 0)
-            {
-                e = exception_chain.Pop();
-                builder.AppendFormat("{0}: {1} (in `{2}')", e.GetType(), e.Message, e.Source).AppendLine();
-                builder.Append(e.StackTrace);
-                if (exception_chain.Count > 0)
-                {
-                    builder.AppendLine();
-                }
-            }
+			while (exception_chain.Count > 0)
+			{
+				e = exception_chain.Pop();
+				builder.AppendFormat("{0}: {1} (in `{2}')", e.GetType(), e.Message, e.Source).AppendLine();
+				builder.Append(e.StackTrace);
+				if (exception_chain.Count > 0)
+				{
+					builder.AppendLine();
+				}
+			}
 
-            Log.Warning($"Caught an exception {builder.ToString()}");
-        }
+			Log.Warning($"Caught an exception {builder.ToString()}");
+		}
 
-        static void Commit(LogEntryType type, string message)
-        {
-            if (type == LogEntryType.Debug && !Debugging)
-            {
-                return;
-            }
+		static void Commit(LogEntryType type, string message)
+		{
+			if (type == LogEntryType.Debug && !Debugging)
+			{
+				return;
+			}
 
-            if (type != LogEntryType.Information)
-            {
-                switch (type)
-                {
-                    case LogEntryType.Error:
-                        ConsoleCrayon.ForegroundColor = ConsoleColor.Red;
-                        break;
-                    case LogEntryType.Warning:
-                        ConsoleCrayon.ForegroundColor = ConsoleColor.DarkYellow;
-                        break;
-                    case LogEntryType.Information:
-                        ConsoleCrayon.ForegroundColor = ConsoleColor.Green;
-                        break;
-                    case LogEntryType.Debug:
-                        ConsoleCrayon.ForegroundColor = ConsoleColor.Blue;
-                        break;
-                }
+			if (type != LogEntryType.Information)
+			{
+				switch (type)
+				{
+					case LogEntryType.Error:
+						ConsoleCrayon.ForegroundColor = ConsoleColor.Red;
+						break;
+					case LogEntryType.Warning:
+						ConsoleCrayon.ForegroundColor = ConsoleColor.DarkYellow;
+						break;
+					case LogEntryType.Information:
+						ConsoleCrayon.ForegroundColor = ConsoleColor.Green;
+						break;
+					case LogEntryType.Debug:
+						ConsoleCrayon.ForegroundColor = ConsoleColor.Blue;
+						break;
+				}
 
-                var thread_name = String.Empty;
-                if (Debugging)
-                {
-                    thread_name = $"{Thread.CurrentThread.ManagedThreadId}";
-                }
+				var thread_name = String.Empty;
+				if (Debugging)
+				{
+					thread_name = $"{Thread.CurrentThread.ManagedThreadId}";
+				}
 
-                lock (writeLock)
-                {
-                    Write("[{5}{0} {1:00}:{2:00}:{3:00}.{4:000}]", TypeString(type), DateTime.Now.Hour,
-                        DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond, thread_name);
+				lock (writeLock)
+				{
+					Write("[{5}{0} {1:00}:{2:00}:{3:00}.{4:000}]", TypeString(type), DateTime.Now.Hour,
+						DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond, thread_name);
 
-                    ConsoleCrayon.ResetColor();
+					ConsoleCrayon.ResetColor();
 
-                    Write($" {message}\n");
-                }
-            }
-        }
+					Write($" {message}\n");
+				}
+			}
+		}
 
-        static void Write(string format, params object[] args)
-        {
-            System.Diagnostics.Debug.Write(String.Format(format, args));
-        }
+		static void Write(string format, params object[] args)
+		{
+			System.Diagnostics.Debug.Write(String.Format(format, args));
+		}
 
-        static string TypeString(LogEntryType type)
-        {
-            switch (type)
-            {
-                case LogEntryType.Debug:
-                    return "Debug";
-                case LogEntryType.Warning:
-                    return "Warn ";
-                case LogEntryType.Error:
-                    return "Error";
-                case LogEntryType.Information:
-                    return "Info ";
-            }
-            return null;
-        }
-    }
+		static string TypeString(LogEntryType type)
+		{
+			switch (type)
+			{
+				case LogEntryType.Debug:
+					return "Debug";
+				case LogEntryType.Warning:
+					return "Warn ";
+				case LogEntryType.Error:
+					return "Error";
+				case LogEntryType.Information:
+					return "Info ";
+			}
+			return null;
+		}
+	}
 }

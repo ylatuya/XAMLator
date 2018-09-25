@@ -23,64 +23,64 @@ using Newtonsoft.Json.Linq;
 
 namespace XAMLator.HttpServer
 {
-    /// <summary>
-    /// Http request.
-    /// </summary>
-    public class HttpRequest
-    {
-        public HttpRequest(string httpMethod, Uri url, Stream stream, Dictionary<string, IEnumerable<string>> headers)
-        {
-            HttpMethod = httpMethod;
-            Url = url;
-            Body = stream;
-            Parameters = new ExpandoObject();
-            Headers = headers;
-        }
+	/// <summary>
+	/// Http request.
+	/// </summary>
+	public class HttpRequest
+	{
+		public HttpRequest(string httpMethod, Uri url, Stream stream, Dictionary<string, IEnumerable<string>> headers)
+		{
+			HttpMethod = httpMethod;
+			Url = url;
+			Body = stream;
+			Parameters = new ExpandoObject();
+			Headers = headers;
+		}
 
-        /// <summary>
-        /// Gets the Http method.
-        /// </summary>
-        /// <value>The Http method.</value>
-        public string HttpMethod { get; private set; }
+		/// <summary>
+		/// Gets the Http method.
+		/// </summary>
+		/// <value>The Http method.</value>
+		public string HttpMethod { get; private set; }
 
-        /// <summary>
-        /// Gets the URL.
-        /// </summary>
-        /// <value>The URL.</value>
-        public Uri Url { get; private set; }
+		/// <summary>
+		/// Gets the URL.
+		/// </summary>
+		/// <value>The URL.</value>
+		public Uri Url { get; private set; }
 
-        public Stream Body { get; private set; }
+		public Stream Body { get; private set; }
 
-        /// <summary>
-        /// Gets the query or url parameters of the request.
-        /// </summary>
-        /// <value>The parameters.</value>
-        public dynamic Parameters { get; private set; }
+		/// <summary>
+		/// Gets the query or url parameters of the request.
+		/// </summary>
+		/// <value>The parameters.</value>
+		public dynamic Parameters { get; private set; }
 
-        /// <summary>
-        /// Gets the headers of the request.
-        /// </summary>
-        /// <value>The headers.</value>
-        public Dictionary<string, IEnumerable<string>> Headers { get; private set; }
-    }
+		/// <summary>
+		/// Gets the headers of the request.
+		/// </summary>
+		/// <value>The headers.</value>
+		public Dictionary<string, IEnumerable<string>> Headers { get; private set; }
+	}
 
-    public class JsonHttpRequest : HttpRequest
-    {
-        public JsonHttpRequest(string httpMethod, Uri url, Stream stream, Dictionary<string,
-                                IEnumerable<string>> headers, string json) :
-        base(httpMethod, url, stream, headers)
-        {
-            object data = Serializer.DeserializeJson(json);
-            if (data is JObject jData)
-            {
-                Data = jData.ToObject<Dictionary<string, string>>();
-            }
-        }
+	public class JsonHttpRequest : HttpRequest
+	{
+		public JsonHttpRequest(string httpMethod, Uri url, Stream stream, Dictionary<string,
+								IEnumerable<string>> headers, string json) :
+		base(httpMethod, url, stream, headers)
+		{
+			object data = Serializer.DeserializeJson(json);
+			if (data is JObject jData)
+			{
+				Data = jData.ToObject<Dictionary<string, string>>();
+			}
+		}
 
-        /// <summary>
-        /// Gets the data of the request, deseralized from the request body
-        /// </summary>
-        /// <value>The data.</value>
-        public object Data { get; private set; }
-    }
+		/// <summary>
+		/// Gets the data of the request, deseralized from the request body
+		/// </summary>
+		/// <value>The data.</value>
+		public object Data { get; private set; }
+	}
 }
