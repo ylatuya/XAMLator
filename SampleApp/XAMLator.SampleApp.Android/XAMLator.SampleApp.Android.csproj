@@ -96,7 +96,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\XAMLator.Server.Droid\XAMLator.Server.Droid.csproj">
       <Project>{8634D953-84BF-4BBD-873B-B4339BEEA7BF}</Project>
-      <Name>XAMLator.Server.Droid</Name>
+      <Name>XAMLator.Server.Mono.Droid</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\XAMLator.SampleApp\XAMLator.SampleApp.projitems" Label="Shared" Condition="Exists('..\XAMLator.SampleApp\XAMLator.SampleApp.projitems')" />

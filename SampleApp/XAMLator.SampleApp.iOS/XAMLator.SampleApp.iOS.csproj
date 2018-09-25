@@ -149,15 +149,15 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\XAMLator.Server.iOS\XAMLator.Server.iOS.csproj">
-      <Project>{9F60986F-4549-436A-9467-8718FFE84CCE}</Project>
-      <Name>XAMLator.Server.iOS</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Xamarin.Forms">
       <Version>3.2.0.839982</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\XAMLator.Server.iOS\XAMLator.Server.Mono.iOS.csproj">
+      <Project>{9F60986F-4549-436A-9467-8718FFE84CCE}</Project>
+      <Name>XAMLator.Server.Mono.iOS</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\XAMLator.SampleApp\XAMLator.SampleApp.projitems" Label="Shared" Condition="Exists('..\XAMLator.SampleApp\XAMLator.SampleApp.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

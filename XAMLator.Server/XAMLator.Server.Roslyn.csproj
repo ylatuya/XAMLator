@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="ErrorPage.xaml" />
+    <None Remove="XAMLator.Server.projitems" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="DiscoveryBroadcaster.cs" />
+    <Compile Remove="ErrorPage.xaml.cs" />
+    <Compile Remove="ErrorViewModel.cs" />
+    <Compile Remove="IEvaluator.cs" />
+    <Compile Remove="IPreviewer.cs" />
+    <Compile Remove="PreviewPage.cs" />
+    <Compile Remove="PreviewServer.cs" />
+    <Compile Remove="Previewer.cs" />
+    <Compile Remove="Class1.cs" />
+    <Compile Remove="VM.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="2.9.0" />
+    <PackageReference Include="Xamarin.Forms" Version="3.2.0.839982" />
+  </ItemGroup>
+  <Import Project="..\XAMLator.Server.Shared\XAMLator.Server.Shared.projitems" Label="Shared" Condition="Exists('..\XAMLator.Server.Shared\XAMLator.Server.Shared.projitems')" />
+  <Import Project="..\XAMLator.Core\XAMLator.Core.projitems" Label="Shared" Condition="Exists('..\XAMLator.Core\XAMLator.Core.projitems')" />
+</Project>

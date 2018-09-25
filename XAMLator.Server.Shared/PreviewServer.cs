@@ -79,7 +79,7 @@ namespace XAMLator.Server
 			EvalResult result = null;
 			try
 			{
-				result = vm.Eval(evalRequest, mainScheduler, CancellationToken.None);
+				result = await vm.Eval(evalRequest, mainScheduler, CancellationToken.None);
 				evalResponse.Messages = result.Messages;
 				evalResponse.Duration = result.Duration;
 				Log.Information($"Visualizing result {result.Result}");
