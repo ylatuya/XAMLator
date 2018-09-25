@@ -27,7 +27,7 @@ namespace XAMLator.Client
 			}
 			if (boundDoc != null)
 			{
-				boundDoc.DocumentParsed -= BoundDoc_Saved;
+				boundDoc.Saved -= HandleDocumentSaved;
 				boundDoc = null;
 			}
 
@@ -35,7 +35,7 @@ namespace XAMLator.Client
 			{
 				boundDoc = doc;
 				Log.Information($"Monitoring XAML document {boundDoc.FileName}");
-				boundDoc.Saved += BoundDoc_Saved;
+				boundDoc.Saved += HandleDocumentSaved;
 				Preview();
 			}
 		}
@@ -46,7 +46,7 @@ namespace XAMLator.Client
 			return OnXAMLChanged(boundDoc.Editor.Text);
 		}
 
-		async void BoundDoc_Saved(object sender, EventArgs e)
+		async void HandleDocumentSaved(object sender, EventArgs e)
 		{
 			await Preview();
 		}
