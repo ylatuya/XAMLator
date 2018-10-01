@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-
 using Xamarin.Forms;
 
 namespace XAMLator.SampleApp
@@ -10,6 +8,7 @@ namespace XAMLator.SampleApp
 		public Calculator()
 		{
 			InitializeComponent();
+			BackgroundColor = Color.Blue;
 		}
 
 		void OnSelectNumber(object sender, EventArgs args)

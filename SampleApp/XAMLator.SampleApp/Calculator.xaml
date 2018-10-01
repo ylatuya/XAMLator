@@ -6,7 +6,7 @@
         </OnPlatform>
     </ContentPage.Padding>
 
-    <Grid Padding="5,0" RowSpacing="2" ColumnSpacing="2" BackgroundColor="Black">
+    <Grid Padding="5,0" RowSpacing="2" ColumnSpacing="2" BackgroundColor="Red">
 
        <Grid.RowDefinitions>
          <RowDefinition Height="2*" />
@@ -24,7 +24,7 @@
           <ColumnDefinition Width="*" />
        </Grid.ColumnDefinitions>
 
-       <Label x:Name="resultText" FontSize="48" FontAttributes="Bold" BackgroundColor="Black" Text="0"
+       <Label x:Name="resultText4" FontSize="33" FontAttributes="Bold" BackgroundColor="Black" Text="0"
               TextColor="White" HorizontalTextAlignment="End" VerticalTextAlignment="Center"
               LineBreakMode="NoWrap" Grid.ColumnSpan="4" />
 

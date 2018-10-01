@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
+using Microsoft.CodeAnalysis;
 
 namespace XAMLator.Client
 {
 	public partial class XAMLatorMonitor
 	{
 		static readonly XAMLatorMonitor instance = new XAMLatorMonitor();
+
 		readonly DiscoveryReceiver discovery;
 		Dictionary<DeviceInfo, HttpClient> clients;
 		object devicesLock = new object();
@@ -36,56 +35,25 @@ namespace XAMLator.Client
 			MonitorEditorChanges();
 		}
 
-		protected virtual async Task OnXAMLChanged(string xaml)
+		async Task OnDocumentChanged(string fileName, string text, SyntaxTree syntaxTree, SemanticModel semanticModel)
 		{
 			if (clients.Count == 0)
 			{
 				return;
 			}
+			var classDecl = DocumentParser.ParseDocument(fileName, text, syntaxTree, semanticModel);
 
-			var doc = ParseXAML(xaml);
-			if (doc == null)
+			EvalRequest request = new EvalRequest
 			{
-				return;
-			}
-
-			List<HttpClient> currentClients = clients.Values.ToList();
-
-			await currentClients.ForEachAsync(10, async (client) =>
+				Declarations = classDecl?.Code,
+				NeedsRebuild = classDecl.NeedsRebuild,
+				NewTypeExpression = classDecl.NewInstanceExpression,
+				Xaml = classDecl.Xaml
+			};
+			await clients.Values.ToList().ForEachAsync(10, async (client) =>
 			{
-				var res = await client.PreviewXaml(doc);
+				var res = await client.PreviewXaml(request);
 			});
-		}
-
-		XAMLDocument ParseXAML(string xaml)
-		{
-			try
-			{
-				using (var stream = new StringReader(xaml))
-				{
-					var reader = XmlReader.Create(stream);
-					var xdoc = XDocument.Load(reader);
-					XNamespace x = "http://schemas.microsoft.com/winfx/2009/xaml";
-					var classAttribute = xdoc.Root.Attribute(x + "Class");
-					CleanAutomationIds(xdoc.Root);
-					xaml = xdoc.ToString();
-					return new XAMLDocument(xaml, classAttribute.Value);
-				}
-			}
-			catch (Exception ex)
-			{
-				Log.Exception(ex);
-				return null;
-			}
-		}
-
-		void CleanAutomationIds(XElement xdoc)
-		{
-			xdoc.SetAttributeValue("AutomationId", null);
-			foreach (var el in xdoc.Elements())
-			{
-				CleanAutomationIds(el);
-			}
 		}
 
 		void HandleDiscoveryDevicesChanged(object sender, EventArgs e)

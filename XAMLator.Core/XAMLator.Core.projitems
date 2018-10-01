@@ -15,7 +15,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DiscoveryBroadcast.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EvalRequest.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)XAMLDocument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExtensionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DiscoveryBroadcastAddress.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpServer\HttpHost.cs" />

@@ -8,9 +8,9 @@ namespace XAMLator
 	public class EvalRequest
 	{
 		public string Declarations;
-		public string ValueExpression;
+		public string NewTypeExpression;
 		public string Xaml;
-		public string XamlType;
+		public bool NeedsRebuild;
 	}
 
 	public class EvalMessage : INotifyPropertyChanged
@@ -25,25 +25,27 @@ namespace XAMLator
 
 	public class EvalResult
 	{
-		public EvalMessage [] Messages;
+		public EvalMessage[] Messages;
 		public TimeSpan Duration;
 		public object Result;
-		public bool HasResult;
+		public bool HasResult => Result != null;
 		public string Xaml;
 
-		public bool HasErrors {
-			get { return Messages != null && Messages.Any (m => m.MessageType == "error"); }
+		public bool HasErrors
+		{
+			get { return Messages != null && Messages.Any(m => m.MessageType == "error"); }
 		}
 	}
 
 	public class EvalResponse
 	{
-		public EvalMessage [] Messages;
+		public EvalMessage[] Messages;
 		public Dictionary<string, List<string>> WatchValues;
 		public TimeSpan Duration;
 
-		public bool HasErrors {
-			get { return Messages != null && Messages.Any (m => m.MessageType == "error"); }
+		public bool HasErrors
+		{
+			get { return Messages != null && Messages.Any(m => m.MessageType == "error"); }
 		}
 	}
 }

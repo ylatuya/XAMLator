@@ -9,23 +9,43 @@ namespace XAMLator.Server
 	{
 		Mono.CSharp.Evaluator eval;
 
-		public Task<bool> CreateNewTypeInstance(string typeName, string code, EvalResult result)
-		{
-			throw new NotImplementedException();
-		}
-
-		public Task<bool> CreateTypeInstance(string typeName, EvalResult result)
+		public Task<bool> CreateNewTypeInstance(string expression, string code, EvalResult result)
 		{
 			EnsureConfigured();
 			try
 			{
-				result.Result = eval.Evaluate($"new {typeName} ()");
+				object retResult;
+				bool hasResult;
+				if (!String.IsNullOrEmpty(code))
+				{
+					var ret = eval.Evaluate(code, out retResult, out hasResult);
+				}
+				result.Result = eval.Evaluate(expression);
 				return Task.FromResult(true);
 			}
 			catch (Exception ex)
 			{
 				Log.Exception(ex);
-				Log.Error($"Unhandled error creating new instance of {typeName}");
+				Log.Error($"Unhandled error creating new instance of {expression}");
+				result.Messages = new EvalMessage[] { new EvalMessage {
+						MessageType = "error", Text = ex.ToString()}
+				};
+			}
+			return Task.FromResult(false);
+		}
+
+		public Task<bool> EvaluateExpression(string expression, EvalResult result)
+		{
+			EnsureConfigured();
+			try
+			{
+				result.Result = eval.Evaluate($"new {expression} ()");
+				return Task.FromResult(true);
+			}
+			catch (Exception ex)
+			{
+				Log.Exception(ex);
+				Log.Error($"Unhandled error creating new instance of {expression}");
 				result.Messages = new EvalMessage[] { new EvalMessage {
 						MessageType = "error", Text = ex.ToString()}
 				};
@@ -50,6 +70,7 @@ namespace XAMLator.Server
 			foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
 			{
 				LoadAssembly(a);
+
 			}
 		}
 
@@ -58,7 +79,7 @@ namespace XAMLator.Server
 			var name = assembly.GetName().Name;
 			if (name == "mscorlib" || name == "System" || name == "System.Core")
 				return;
-			eval.ReferenceAssembly(assembly);
+			eval?.ReferenceAssembly(assembly);
 		}
 	}
 }

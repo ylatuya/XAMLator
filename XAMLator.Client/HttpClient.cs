@@ -23,10 +23,9 @@ namespace XAMLator.Client
 		/// Request to preview a xaml document.
 		/// </summary>
 		/// <returns>The evaluation response.</returns>
-		/// <param name="doc">The XAML document.</param>
-		public async Task<EvalResponse> PreviewXaml(XAMLDocument doc)
+		/// <param name="request">The evaluation request.</param>
+		public async Task<EvalResponse> PreviewXaml(EvalRequest request)
 		{
-			EvalRequest request = new EvalRequest { Xaml = doc.XAML, XamlType = doc.Type };
 			var content = new StringContent(Serializer.SerializeJson(request), Encoding.UTF8);
 			var response = await client.PostAsync(baseUri + "/xaml", content);
 			if (response.IsSuccessStatusCode)

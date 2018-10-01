@@ -13,5 +13,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)DiscoveryReceiver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpClient.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DeviceInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DocumentParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FormsViewClassDeclaration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TaskItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)XAMLDocument.cs" />
   </ItemGroup>
 </Project>

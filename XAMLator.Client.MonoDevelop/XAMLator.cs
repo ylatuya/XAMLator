@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
+using MonoDevelop.Core;
 using MonoDevelop.Ide;
 
 namespace XAMLator.Client
@@ -28,22 +30,39 @@ namespace XAMLator.Client
 			if (boundDoc != null)
 			{
 				boundDoc.Saved -= HandleDocumentSaved;
+				boundDoc.DocumentParsed -= HandleDocumentParsed;
 				boundDoc = null;
 			}
 
-			if (doc?.FileName.Extension == ".xaml")
+			var ext = doc?.FileName.Extension;
+			if (ext == ".xaml" || ext == ".cs")
 			{
 				boundDoc = doc;
-				Log.Information($"Monitoring XAML document {boundDoc.FileName}");
-				boundDoc.Saved += HandleDocumentSaved;
+				Log.Information($"Monitoring document {boundDoc.FileName}");
+				if (ext == ".xaml")
+				{
+					boundDoc.Saved += HandleDocumentSaved;
+				}
+				else
+				{
+					boundDoc.DocumentParsed += HandleDocumentParsed;
+				}
 				Preview();
 			}
 		}
 
-		Task Preview()
+		Task Preview(SyntaxTree syntaxTree = null, SemanticModel semanticModel = null)
 		{
 			Log.Information($"XAML document changed {boundDoc.Name}");
-			return OnXAMLChanged(boundDoc.Editor.Text);
+			return OnDocumentChanged(boundDoc.FileName, boundDoc.Editor.Text, syntaxTree, semanticModel);
+		}
+
+		async void HandleDocumentParsed(object sender, EventArgs e)
+		{
+			await Preview(
+				await boundDoc.AnalysisDocument.GetSyntaxTreeAsync(),
+				await boundDoc.AnalysisDocument.GetSemanticModelAsync()
+			);
 		}
 
 		async void HandleDocumentSaved(object sender, EventArgs e)

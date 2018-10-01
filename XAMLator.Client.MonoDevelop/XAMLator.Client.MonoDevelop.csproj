@@ -6,9 +6,18 @@
   <ItemGroup>
     <PackageReference Include="MonoDevelop.Addins" Version="0.4.4" />
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.8.166" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Net.Http" />
+    <Reference Include="Xamarin.Forms.Build.Tasks">
+      <HintPath>..\packages\Xamarin.Forms.3.2.0.839982\build\netstandard2.0\Xamarin.Forms.Build.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Utilities.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddinReference Include="MonoDevelop.Refactoring" />
   </ItemGroup>
   <Import Project="..\XAMLator.Core\XAMLator.Core.projitems" Label="Shared" Condition="Exists('..\XAMLator.Core\XAMLator.Core.projitems')" />
   <Import Project="..\XAMLator.Client\XAMLator.Client.projitems" Label="Shared" Condition="Exists('..\XAMLator.Client\XAMLator.Client.projitems')" />

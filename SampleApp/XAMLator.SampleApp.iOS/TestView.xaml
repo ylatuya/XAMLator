@@ -2,12 +2,13 @@
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="XAMLator.SampleApp.TestView"
              >
     <ContentView.Content>
-    </ContentView.Content>
-      <StackLayout>
+         <StackLayout>
         <!-- Place new controls here -->
-        <Label Text="This is a view" 
+        <Label Margin="5, 5, 5, 5" Text="This is a view" 
            HorizontalOptions="Center"
-           BackgroundColor = "Green"
-           VerticalOptions="CenterAndExpand" />
+           BackgroundColor = "Blue"
+           VerticalTextAlignment="Center"
+           VerticalOptions="FillAndExpand" />
     </StackLayout>
+    </ContentView.Content>
 </ContentView>

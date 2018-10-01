@@ -9,6 +9,7 @@ namespace XAMLator.SampleApp
 		public TestView()
 		{
 			InitializeComponent();
+			BackgroundColor = Color.AliceBlue;
 		}
 	}
 }

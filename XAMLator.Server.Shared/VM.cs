@@ -10,14 +10,29 @@ namespace XAMLator.Server
 	/// </summary>
 	public class VM
 	{
+		static MethodInfo loadXAML;
+		static string currentXAML;
 		readonly object mutex = new object();
-		MethodInfo loadXAML;
 		IEvaluator evaluator;
+
+		static VM()
+		{
+			ResolveLoadMethod();
+		}
 
 		public VM()
 		{
-			ResolveLoadMethod();
 			evaluator = new Evaluator();
+		}
+
+		/// <summary>
+		/// Hook used by new instances to load their XAML instead of retrieving
+		/// it from the assembly.
+		/// </summary>
+		/// <param name="view">View.</param>
+		public static void LoadXaml(object view)
+		{
+			loadXAML.Invoke(null, new object[] { view, currentXAML });
 		}
 
 		public Task<EvalResult> Eval(EvalRequest code, TaskScheduler mainScheduler, CancellationToken token)
@@ -44,8 +59,6 @@ namespace XAMLator.Server
 
 		async Task<EvalResult> EvalOnMainThread(EvalRequest code, CancellationToken token)
 		{
-			object result = null;
-			bool hasResult = false;
 			EvalResult evalResult = new EvalResult();
 
 			var sw = new System.Diagnostics.Stopwatch();
@@ -54,38 +67,38 @@ namespace XAMLator.Server
 
 			sw.Start();
 
-			if (code.Xaml != null)
+			currentXAML = code.Xaml;
+			if (!await evaluator.CreateNewTypeInstance(code.NewTypeExpression,
+													   code.NeedsRebuild ? code.Declarations : null,
+													   evalResult))
 			{
-				result = await LoadXAML(code.Xaml, code.XamlType, code.Declarations, evalResult);
-				hasResult = result != null;
+				// Try again recompiling just in case
+				await evaluator.CreateNewTypeInstance(code.NewTypeExpression,
+													  code.Declarations,
+													  evalResult);
 			}
-			else
+
+			if (evalResult.Result != null)
 			{
-				throw new NotSupportedException();
+				LoadXAML(evalResult.Result, code.Xaml, evalResult);
 			}
 			sw.Stop();
 
-			Log.Debug($"Evaluation ended with result  {result}");
+			Log.Debug($"Evaluation ended with result  {evalResult.Result}");
 
 			evalResult.Duration = sw.Elapsed;
-			evalResult.Result = result;
-			evalResult.HasResult = hasResult;
 			return evalResult;
 		}
 
 
-		async Task<object> LoadXAML(string xaml, string xamlType, string codeBehind, EvalResult result)
+		bool LoadXAML(object view, string xaml, EvalResult result)
 		{
-			Log.Information($"Loading XAML for type  {xamlType}");
-			if (!await evaluator.CreateTypeInstance(xamlType, result))
-			{
-				return null;
-			}
+			Log.Information($"Loading XAML for type  {view}");
 			try
 			{
-				loadXAML.Invoke(null, new object[] { result.Result, xaml });
-				Log.Information($"XAML loaded correctly for view {result.Result}");
-				return result.Result;
+				loadXAML.Invoke(null, new object[] { view, xaml });
+				Log.Information($"XAML loaded correctly for view {view}");
+				return true;
 			}
 			catch (TargetInvocationException ex)
 			{
@@ -94,10 +107,10 @@ namespace XAMLator.Server
 						MessageType = "error", Text = ex.ToString()}
 				};
 			}
-			return null;
+			return false;
 		}
 
-		void ResolveLoadMethod()
+		static void ResolveLoadMethod()
 		{
 			var asms = AppDomain.CurrentDomain.GetAssemblies();
 			var xamlAssembly = Assembly.Load(new AssemblyName("Xamarin.Forms.Xaml"));
