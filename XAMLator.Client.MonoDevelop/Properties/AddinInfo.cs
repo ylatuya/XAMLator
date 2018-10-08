@@ -30,7 +30,7 @@ using Mono.Addins.Description;
 [assembly: Addin(
 	"XAMLator.Client.MonoDevelop",
 	Namespace = "XAMLator.Client.MonoDevelop",
-	Version = "1.0.2"
+	Version = "1.0.3"
 )]
 
 [assembly: AddinName("XAMLator.Client.MonoDevelop")]

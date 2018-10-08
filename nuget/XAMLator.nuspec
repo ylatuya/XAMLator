@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>XAMLator</id>
+    <version>1.0.2</version>
+    <title></title>
+    <authors>Andoni Morales Alastruey</authors>
+    <owners>Andoni Morales Alastruey</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Live XAML previewer for Xamarin Forms</description>
+    <summary></summary>
+    <releaseNotes></releaseNotes>
+    <copyright></copyright>
+    <language></language>
+    <dependencies>
+      <dependency id="Newtonsoft.Json" version="9.0.1" />
+      <dependency id="Xamarin.Forms" version="3.0.0.446417" />
+    </dependencies>
+  </metadata>
+</package>
