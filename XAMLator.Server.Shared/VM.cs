@@ -68,12 +68,12 @@ namespace XAMLator.Server
 			sw.Start();
 
 			currentXAML = code.Xaml;
-			if (!await evaluator.CreateNewTypeInstance(code.NewTypeExpression,
+			if (!await evaluator.EvaluateExpression(code.NewTypeExpression,
 													   code.NeedsRebuild ? code.Declarations : null,
 													   evalResult))
 			{
 				// Try again recompiling just in case
-				await evaluator.CreateNewTypeInstance(code.NewTypeExpression,
+				await evaluator.EvaluateExpression(code.NewTypeExpression,
 													  code.Declarations,
 													  evalResult);
 			}

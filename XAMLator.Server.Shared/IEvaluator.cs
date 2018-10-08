@@ -6,18 +6,11 @@ namespace XAMLator.Server
 	public interface IEvaluator
 	{
 		/// <summary>
-		/// Creates a new instance of the requested type .
-		/// </summary>
-		/// <returns>A new instance of the requested type.</returns>
-		/// <param name="typeName">Type name.</param>
-		Task<bool> EvaluateExpression(string expression, EvalResult evalResult);
-
-		/// <summary>
-		/// Creates a new type instance of class from its code.
+		/// Evaluates an expression and code before the expression if requested.
 		/// </summary>
 		/// <returns>A new instance of the type.</returns>
-		/// <param name="typeName">Type name.</param>
+		/// <param name="evalExpression">Type name.</param>
 		/// <param name="code">The class code.</param>
-		Task<bool> CreateNewTypeInstance(string newTypeExpression, string code, EvalResult evalResult);
+		Task<bool> EvaluateExpression(string evalExpression, string code, EvalResult evalResult);
 	}
 }

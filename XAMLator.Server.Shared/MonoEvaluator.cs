@@ -9,7 +9,7 @@ namespace XAMLator.Server
 	{
 		Mono.CSharp.Evaluator eval;
 
-		public Task<bool> CreateNewTypeInstance(string expression, string code, EvalResult result)
+		public Task<bool> EvaluateExpression(string expression, string code, EvalResult result)
 		{
 			EnsureConfigured();
 			try
