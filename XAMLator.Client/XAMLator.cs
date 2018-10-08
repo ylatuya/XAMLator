@@ -6,42 +6,48 @@ using Microsoft.CodeAnalysis;
 
 namespace XAMLator.Client
 {
-	public partial class XAMLatorMonitor
+	public class XAMLatorMonitor
 	{
-		static readonly XAMLatorMonitor instance = new XAMLatorMonitor();
+		static XAMLatorMonitor instance;
 
 		readonly DiscoveryReceiver discovery;
 		Dictionary<DeviceInfo, HttpClient> clients;
 		object devicesLock = new object();
+		IIDE ide;
 
-		XAMLatorMonitor()
+		XAMLatorMonitor(IIDE ide)
 		{
+			this.ide = ide;
 			clients = new Dictionary<DeviceInfo, HttpClient>();
 			discovery = new DiscoveryReceiver();
 			discovery.DevicesChanged += HandleDiscoveryDevicesChanged;
 			discovery.Start();
+			ide.DocumentChanged += HandleDocumentChanged;
 		}
 
-		public static XAMLatorMonitor Instance
+		public static XAMLatorMonitor Init(IIDE ide)
 		{
-			get
-			{
-				return instance;
-			}
+			instance = new XAMLatorMonitor(ide);
+			return instance;
 		}
+
+		public static XAMLatorMonitor Instance => instance;
+
+		public IIDE IDE => ide;
 
 		public void StartMonitoring()
 		{
-			MonitorEditorChanges();
+			ide.MonitorEditorChanges();
 		}
 
-		async Task OnDocumentChanged(string fileName, string text, SyntaxTree syntaxTree, SemanticModel semanticModel)
+		async void HandleDocumentChanged(object sender, DocumentChangedEventArgs e)
 		{
 			if (clients.Count == 0)
 			{
 				return;
 			}
-			var classDecl = DocumentParser.ParseDocument(fileName, text, syntaxTree, semanticModel);
+
+			var classDecl = await DocumentParser.ParseDocument(e.Filename, e.Text, e.SyntaxTree, e.SemanticModel);
 
 			EvalRequest request = new EvalRequest
 			{

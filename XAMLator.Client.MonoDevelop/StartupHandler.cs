@@ -7,6 +7,7 @@ namespace XAMLator.Client
 	{
 		protected override void Run()
 		{
+			XAMLatorMonitor.Init(new MonoDevelopIDE());
 			XAMLatorMonitor.Instance.StartMonitoring();
 		}
 	}

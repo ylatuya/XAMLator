@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 
 namespace XAMLator.Client
@@ -15,10 +16,10 @@ namespace XAMLator.Client
 		/// <param name="text">Text changed.</param>
 		/// <param name="syntaxTree">Syntax tree.</param>
 		/// <param name="semanticModel">Semantic model.</param>
-		public static FormsViewClassDeclaration ParseDocument(string fileName,
-															  string text,
-															  SyntaxTree syntaxTree,
-															  SemanticModel semanticModel)
+		public static async Task<FormsViewClassDeclaration> ParseDocument(string fileName,
+																		  string text,
+																		  SyntaxTree syntaxTree,
+																		  SemanticModel semanticModel)
 		{
 			// FIXME: Support any kind of types, not just Xamarin.Forms views
 			if (!fileName.EndsWith(".xaml") && !fileName.EndsWith(".xaml.cs"))
@@ -41,7 +42,7 @@ namespace XAMLator.Client
 				{
 					xamlDocument = XAMLDocument.Parse(text);
 				}
-				xamlClass.UpdateXaml(xamlDocument.XAML);
+				await xamlClass.UpdateXaml(xamlDocument.XAML);
 			}
 			// The document is code behind
 			else if (fileName.EndsWith(".xaml.cs"))

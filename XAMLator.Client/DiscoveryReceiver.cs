@@ -8,7 +8,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using MonoDevelop.Ide;
 using XAMLator.HttpServer;
 
 namespace XAMLator.Client
@@ -53,7 +52,7 @@ namespace XAMLator.Client
 			host = await HttpHost.StartServer(this, Constants.DEFAULT_CLIENT_PORT, 1);
 			if (host == null)
 			{
-				MessageService.ShowError($"XAMLator: Failed to start the server. There seems to be another instance of VS4MAC is running!");
+				XAMLatorMonitor.Instance.IDE.ShowError($"XAMLator: Failed to start the server. There seems to be another instance of VS4MAC is running!");
 				return false;
 			}
 			try
@@ -62,7 +61,7 @@ namespace XAMLator.Client
 			}
 			catch (Exception ex)
 			{
-				MessageService.ShowError($"XAMLator: Failed to start the discovery receiver", ex);
+				XAMLatorMonitor.Instance.IDE.ShowError($"XAMLator: Failed to start the discovery receiver", ex);
 				Debug.WriteLine("XAMLator: Failed to listen: " + ex);
 				listener = null;
 			}
