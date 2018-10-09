@@ -15,7 +15,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)DeviceInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DocumentParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FormsViewClassDeclaration.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TaskItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)XAMLDocument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IIDE.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DocumentChangedEventArgs.cs" />
