@@ -8,7 +8,7 @@ namespace XAMLator.SampleApp.MacOS
 	[Register("AppDelegate")]
 	public class AppDelegate : FormsApplicationDelegate
 	{
-		NSWindow _window;
+		readonly NSWindow _window;
 
 		public AppDelegate()
 		{
