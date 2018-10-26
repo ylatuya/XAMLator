@@ -77,12 +77,20 @@ namespace XAMLator
 					Address = y.Address.ToString(),
 					Port = port,
 					Interface = x.Name
-				}));
+				})).ToArray();
+			if (!iips.Any())
+			{
+				iips = new DiscoveryBroadcastAddress[] {new DiscoveryBroadcastAddress {
+						Address = "127.0.0.1",
+						Port = port,
+						Interface = ""
+					}};
+			}
 			var r = new DiscoveryBroadcast
 			{
 				DeviceName = "Device",
 				DeviceModel = "Model",
-				Addresses = iips.ToArray()
+				Addresses = iips
 			};
 #if __IOS__
 			var dev = UIKit.UIDevice.CurrentDevice;
