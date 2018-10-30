@@ -1,0 +1,50 @@
+# Xamarin.iOS
+# Build a Xamarin.iOS project.
+# Add steps that install certificates, test, sign, and distribute an app, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/xamarin
+
+pool:
+  vmImage: 'macOS 10.13'
+
+steps:
+# To manually select a Xamarin SDK version on the Microsoft-hosted macOS agent,
+# configure this task with the SDK version you want to target and set the "enabled" property to true.
+# See https://go.microsoft.com/fwlink/?linkid=871629
+- script: sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_4_1 
+  displayName: 'Select the Xamarin SDK version'
+  enabled: false
+
+- task: NuGetToolInstaller@0
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '**/*.sln'
+
+- script: msbuild /p:Configuration=Release XAMLator.Server.Net47/XAMLator.Server.Mono.Net47.csproj 
+  displayName: 'Build XAMLator.Server.Mono.Net47'
+
+- script: msbuild /p:Configuration=Release XAMLator.Server.Droid/XAMLator.Server.Mono.Droid.csproj 
+  displayName: 'Build XAMLator.Server.Mono.Droid'
+
+- script: msbuild /p:Configuration=Release XAMLator.Server.iOS/XAMLator.Server.Mono.iOS.csproj
+  displayName: 'Build XAMLator.Server.Mono.iOS'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: 'nuget/XAMLator.nuspec'
+
+- script: msbuild /p:Configuration=Release XAMLator.Client.MonoDevelop/XAMLator.Client.MonoDevelop.csproj
+  displayName: 'Build XAMLator.Client.MonoDevelop'
+
+- script: /Applications/Visual\ Studio.app/Contents/MacOS/vstool setup pack XAMLator.Client.MonoDevelop/bin/Release/net461/XAMLator.Client.MonoDevelop.dll
+  displayName: 'Build vs4mac Addin'
+
+- script: mv XAMLator.Client.MonoDevelop.XAMLator.Client.MonoDevelop_*.mpack $(Build.ArtifactStagingDirectory)/XAMLator.Client.MonoDevelop.mpack
+  displayName: 'Copy addin'
+
+  # Publish Pipeline Artifact
+- task: PublishPipelineArtifact@0
+  inputs:
+    artifactName: 'vs4mac addin'
+    targetPath: $(Build.ArtifactStagingDirectory)
