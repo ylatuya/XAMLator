@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>XAMLator</id>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <title></title>
     <authors>Andoni Morales Alastruey</authors>
     <owners>Andoni Morales Alastruey</owners>
@@ -16,5 +16,20 @@
       <dependency id="Newtonsoft.Json" version="9.0.1" />
       <dependency id="Xamarin.Forms" version="3.0.0.446417" />
     </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="Mono.CSharp"/>
+    </frameworkAssemblies>
   </metadata>
+  <files>
+    <file src="../XAMLator.Server.Droid/bin/Release/XAMLator.Server.dll" target="lib/monoandroid81/XAMLator.Server.dll" />
+    <file src="../XAMLator.Server.Droid/bin/Release/XAMLator.Server.pdb" target="lib/monoandroid81/XAMLator.Server.pdb" />
+    <file src="../XAMLator.Server.iOS/bin/Release/XAMLator.Server.dll" target="lib/xamarinios10/XAMLator.Server.dll" />
+    <file src="../XAMLator.Server.iOS/bin/Release/XAMLator.Server.pdb" target="lib/xamarinios10/XAMLator.Server.pdb" />
+    <file src="../XAMLator.Server.Net47/bin/Release/XAMLator.Server.dll" target="lib/net47/XAMLator.Server.dll" />
+    <file src="../XAMLator.Server.Net47/bin/Release/XAMLator.Server.pdb" target="lib/net47/XAMLator.Server.pdb" />
+    <file src="../packages/Mono.Cecil.0.10.1/lib/net40/Mono.Cecil.dll" target="build\Mono.Cecil.dll" />
+    <file src="../XAMLator.Build.Tasks/XAMLator.targets" target="build\XAMLator.targets" />
+    <file src="../XAMLator.Build.Tasks/bin/Release/XAMLator.Build.Tasks.dll" target="build/XAMLator.Build.Tasks.dll" />
+    <file src="../XAMLator.Build.Tasks/bin/Release/XAMLator.Build.Tasks.pdb" target="build/XAMLator.Build.Tasks.pdb" />
+  </files>
 </package>
