@@ -60,7 +60,7 @@ namespace XAMLator
 
 		public static void Warning(string message) => Commit(LogEntryType.Warning, message);
 
-		public static void Error(string message) => Commit(LogEntryType.Warning, message);
+		public static void Error(string message) => Commit(LogEntryType.Error, message);
 
 		public static void Exception(Exception e)
 		{
@@ -111,23 +111,24 @@ namespace XAMLator
 						ConsoleCrayon.ForegroundColor = ConsoleColor.Blue;
 						break;
 				}
-
-				var thread_name = String.Empty;
-				if (Debugging)
-				{
-					thread_name = $"{Thread.CurrentThread.ManagedThreadId}";
-				}
-
-				lock (writeLock)
-				{
-					Write("[{5}{0} {1:00}:{2:00}:{3:00}.{4:000}]", TypeString(type), DateTime.Now.Hour,
-						DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond, thread_name);
-
-					ConsoleCrayon.ResetColor();
-
-					Write($" {message}\n");
-				}
 			}
+
+			var thread_name = String.Empty;
+			if (Debugging)
+			{
+				thread_name = $"{Thread.CurrentThread.ManagedThreadId}";
+			}
+
+			lock (writeLock)
+			{
+				Write("[{5}{0} {1:00}:{2:00}:{3:00}.{4:000}]", TypeString(type), DateTime.Now.Hour,
+					DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond, thread_name);
+
+				ConsoleCrayon.ResetColor();
+
+				Write($" {message}\n");
+			}
+
 		}
 
 		static void Write(string format, params object[] args)
