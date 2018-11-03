@@ -6,6 +6,8 @@
 pool:
   vmImage: 'macOS 10.13'
 
+name: $(BuildDefinitionName)_$(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r)
+
 steps:
 # To manually select a Xamarin SDK version on the Microsoft-hosted macOS agent,
 # configure this task with the SDK version you want to target and set the "enabled" property to true.
@@ -43,12 +45,7 @@ steps:
   inputs:
     command: 'pack'
     packagesToPack: 'nuget/XAMLator.nuspec'
-
-- script: mkdir $(Build.ArtifactStagingDirectory)/nugget/
-  displayName: 'Create nugget directory'
-
-- script: mv $(Build.ArtifactStagingDirectory)/XAMLator.*.nupkg $(Build.ArtifactStagingDirectory)/nugget/
-  displayName: 'Copy nugget'
+    versioningScheme: 'byBuildNumber'
 
 - script: msbuild /p:Configuration=Release XAMLator.Client.MonoDevelop/XAMLator.Client.MonoDevelop.csproj
   displayName: 'Build XAMLator.Client.MonoDevelop'
@@ -56,20 +53,11 @@ steps:
 - script: /Applications/Visual\ Studio.app/Contents/MacOS/vstool setup pack XAMLator.Client.MonoDevelop/bin/Release/net461/XAMLator.Client.MonoDevelop.dll
   displayName: 'Build vs4mac Addin'
 
-- script: mkdir $(Build.ArtifactStagingDirectory)/addin/
-  displayName: 'Create addin directory'
-
-- script: mv XAMLator.Client.MonoDevelop.XAMLator.Client.MonoDevelop_*.mpack $(Build.ArtifactStagingDirectory)/addin/XAMLator.Client.MonoDevelop.mpack
+- script: mv XAMLator.Client.MonoDevelop.XAMLator.Client.MonoDevelop_*.mpack $(Build.ArtifactStagingDirectory)/XAMLator.Client.MonoDevelop.mpack
   displayName: 'Copy addin'
 
   # Publish Pipeline Artifact
 - task: PublishPipelineArtifact@0
   inputs:
-    artifactName: 'vs4mac addin'
-    targetPath: $(Build.ArtifactStagingDirectory)/addin
-
-  # Publish Pipeline Artifact
-- task: PublishPipelineArtifact@0
-  inputs:
-    artifactName: 'XAMLator Nugget'
-    targetPath: $(Build.ArtifactStagingDirectory)/nugget
+    artifactName: 'addin nugget'
+    targetPath: $(Build.ArtifactStagingDirectory)
