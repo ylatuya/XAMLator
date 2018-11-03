@@ -3,15 +3,19 @@
   <metadata>
     <id>XAMLator</id>
     <version>1.0.3</version>
-    <title></title>
+    <title>Live XAML previewer for Xamarin Forms</title>
     <authors>Andoni Morales Alastruey</authors>
     <owners>Andoni Morales Alastruey</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Live XAML previewer for Xamarin Forms</description>
-    <summary></summary>
+    <summary>XAMLator provide a live developement environment for Xamarin Forms projects, allowing to preview XAML, Code Behind or CSS updates live while the application is running</summary>
     <releaseNotes></releaseNotes>
-    <copyright></copyright>
-    <language></language>
+    <copyright>Andoni Morales Alastruey</copyright>
+    <projectUrl>https://github.com/ylatuya/XAMLator</projectUrl>
+    <repository type="git" url="https://github.com/ylatuya/XAMLator"/>
+    <licenseUrl>https://raw.githubusercontent.com/ylatuya/XAMLator/README/LICENSE.md</licenseUrl>
+    <language>C#</language>
+    <tags>xamarin XAML live-reload livexaml</tags>
     <dependencies>
       <dependency id="Newtonsoft.Json" version="9.0.1" />
       <dependency id="Xamarin.Forms" version="3.0.0.446417" />
