@@ -104,7 +104,6 @@ namespace XAMLator.Server
 			try
 			{
 				result = await vm.Eval(request, mainScheduler, CancellationToken.None);
-				Log.Information($"Visualizing result {result.Result}");
 				if (result.HasResult)
 				{
 					var tcs = new TaskCompletionSource<bool>();

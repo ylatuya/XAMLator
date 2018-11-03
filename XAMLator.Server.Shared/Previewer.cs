@@ -38,7 +38,7 @@ namespace XAMLator.Server
 		/// <param name="res">Res.</param>
 		public virtual async Task Preview(EvalResult res)
 		{
-			Log.Information($"Previewing {res.GetType()}");
+			Log.Information($"Visualizing result {res.Result}");
 			Page page = res.Result as Page;
 			if (page == null && res.Result is View view)
 			{

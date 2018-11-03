@@ -21,6 +21,14 @@ namespace XAMLator
 		public int Line;
 		public int Column;
 
+		public EvalMessage(string messageType, string text, int line = 0, int column = 0)
+		{
+			MessageType = messageType;
+			Text = text;
+			Line = line;
+			Column = column;
+		}
+
 		public event PropertyChangedEventHandler PropertyChanged;
 	}
 

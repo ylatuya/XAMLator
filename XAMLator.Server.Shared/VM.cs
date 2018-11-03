@@ -99,14 +99,13 @@ namespace XAMLator.Server
 			try
 			{
 				loadXAML.Invoke(null, new object[] { view, xaml });
-				Log.Information($"XAML loaded correctly for view {view}");
+				Log.Debug($"XAML loaded correctly for view {view}");
 				return true;
 			}
 			catch (TargetInvocationException ex)
 			{
 				Log.Error($"Error loading XAML");
-				result.Messages = new EvalMessage[] { new EvalMessage {
-						MessageType = "error", Text = ex.ToString()}
+				result.Messages = new EvalMessage[] { new EvalMessage ("error", ex.ToString())
 				};
 			}
 			return false;
