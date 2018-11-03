@@ -205,8 +205,38 @@ namespace XAMLator.Client
 		{
 			foreach (var styleSheetPath in xaml.StyleSheets)
 			{
-				StyleSheets[styleSheetPath] = File.ReadAllText(
-					Path.Combine(Path.GetDirectoryName(xaml.FilePath), styleSheetPath));
+				try
+				{
+					StyleSheets[styleSheetPath] = File.ReadAllText(ResolveStyleSheetPath(xaml, styleSheetPath));
+				}
+				catch (Exception ex)
+				{
+					Log.Exception(ex);
+				}
+			}
+		}
+
+		string ResolveStyleSheetPath(XAMLDocument xaml, string styleSheetPath)
+		{
+			if (styleSheetPath.StartsWith(Constants.ROOT_REPLACEMENT))
+			{
+				styleSheetPath = styleSheetPath.Replace(Constants.ROOT_REPLACEMENT + "/", "");
+				var currentDir = Path.GetDirectoryName(xaml.FilePath);
+				do
+				{
+					var filePath = Path.Combine(currentDir, styleSheetPath);
+					if (File.Exists(filePath))
+					{
+						return filePath;
+					}
+					currentDir = Path.GetFullPath(Path.Combine(currentDir, ".."));
+				} while (Directory.GetFiles(currentDir).Any(f => f.EndsWith(".sln"))
+						 || currentDir == Directory.GetDirectoryRoot(currentDir));
+				return null;
+			}
+			else
+			{
+				return Path.Combine(Path.GetDirectoryName(xaml.FilePath), styleSheetPath);
 			}
 		}
 

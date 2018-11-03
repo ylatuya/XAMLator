@@ -10,7 +10,7 @@ namespace XAMLator.SampleApp
 		public App()
 		{
 			InitializeComponent();
-			MainPage = new MainPage();
+			MainPage = new PageWithCSS();
 		}
 
 		protected override void OnStart()
