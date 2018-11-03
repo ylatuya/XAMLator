@@ -2,7 +2,7 @@
 
 # XAMLator live previewer for Xamarin.Forms
 
-**XAMLator** is a live XAML previewer for Xamarin.Forms. Change a **XAML** view, its **code behind** or a **CSS** style sheet in the IDE and you preview it **live** in you application in a real device or the emulator!
+**XAMLator** is a live XAML previewer for Xamarin.Forms. Change a **XAML** view, its **code behind** or a **CSS** style sheet in the IDE and you preview it **live** in your application, in a real device or the emulator!
 
 ![monkeys](https://raw.githubusercontent.com/ylatuya/XAMLator/master/docs/monkeys.gif)
 
