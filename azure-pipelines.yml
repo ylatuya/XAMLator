@@ -56,8 +56,7 @@ steps:
 - script: mv XAMLator.Client.MonoDevelop.XAMLator.Client.MonoDevelop_*.mpack $(Build.ArtifactStagingDirectory)/XAMLator.Client.MonoDevelop.mpack
   displayName: 'Copy addin'
 
-  # Publish Pipeline Artifact
-- task: PublishPipelineArtifact@0
+- task: PublishBuildArtifacts@1
   inputs:
-    artifactName: 'addin nugget'
+    artifactName: 'addin_and_nugget'
     targetPath: $(Build.ArtifactStagingDirectory)
