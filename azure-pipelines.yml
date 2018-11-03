@@ -36,6 +36,7 @@ steps:
   displayName: 'Build XAMLator.Build.Tasks.Tests'
 
 - script: mono ../../../packages/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe XAMLator.Build.Tasks.Tests.dll
+  displayName: 'Test XAMLator.Build.Tasks.Tests'
   workingDirectory: XAMLator.Build.Tasks.Tests/bin/Release
 
 - task: NuGetCommand@2
@@ -43,17 +44,32 @@ steps:
     command: 'pack'
     packagesToPack: 'nuget/XAMLator.nuspec'
 
+- script: mkdir $(Build.ArtifactStagingDirectory)/nugget/
+  displayName: 'Create nugget directory'
+
+- script: mv $(Build.ArtifactStagingDirectory)/XAMLator.*.nupkg $(Build.ArtifactStagingDirectory)/nugget/
+  displayName: 'Copy nugget'
+
 - script: msbuild /p:Configuration=Release XAMLator.Client.MonoDevelop/XAMLator.Client.MonoDevelop.csproj
   displayName: 'Build XAMLator.Client.MonoDevelop'
 
 - script: /Applications/Visual\ Studio.app/Contents/MacOS/vstool setup pack XAMLator.Client.MonoDevelop/bin/Release/net461/XAMLator.Client.MonoDevelop.dll
   displayName: 'Build vs4mac Addin'
 
-- script: mv XAMLator.Client.MonoDevelop.XAMLator.Client.MonoDevelop_*.mpack $(Build.ArtifactStagingDirectory)/XAMLator.Client.MonoDevelop.mpack
+- script: mkdir $(Build.ArtifactStagingDirectory)/addin/
+  displayName: 'Create addin directory'
+
+- script: mv XAMLator.Client.MonoDevelop.XAMLator.Client.MonoDevelop_*.mpack $(Build.ArtifactStagingDirectory)/addin/XAMLator.Client.MonoDevelop.mpack
   displayName: 'Copy addin'
 
   # Publish Pipeline Artifact
 - task: PublishPipelineArtifact@0
   inputs:
     artifactName: 'vs4mac addin'
-    targetPath: $(Build.ArtifactStagingDirectory)
+    targetPath: $(Build.ArtifactStagingDirectory)/addin
+
+  # Publish Pipeline Artifact
+- task: PublishPipelineArtifact@0
+  inputs:
+    artifactName: 'XAMLator Nugget'
+    targetPath: $(Build.ArtifactStagingDirectory)/nugget
