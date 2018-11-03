@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:XAMLator.SampleApp"
              x:Class="XAMLator.SampleApp.PageWithCSS">
     <ContentPage.Resources>
-        <StyleSheet Source="Global.css"/>
+        <StyleSheet Source="/Global.css"/>
     </ContentPage.Resources>
     <StackLayout>
         <!-- Place new controls here -->

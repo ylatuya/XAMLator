@@ -14,5 +14,7 @@ namespace XAMLator
 		public const string XAMLATOR_ASSEMBLY = "XAMLator.Server.dll";
 
 		public const string IDE_IP_RESOURCE_NAME = "IdeIP";
+
+		public const string ROOT_REPLACEMENT = "@ROOT@";
 	}
 }

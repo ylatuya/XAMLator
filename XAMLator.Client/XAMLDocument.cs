@@ -37,11 +37,15 @@ namespace XAMLator
 					XNamespace xm = "http://xamarin.com/schemas/2014/forms";
 					var classAttribute = xdoc.Root.Attribute(x + "Class");
 					CleanAutomationIds(xdoc.Root);
-					var styleSheets = xdoc.Root
-										   .Descendants()
-										   .Where(e => e.Name.ToString().EndsWith("StyleSheet"))
-										   .Select(e => e.Attribute("Source").Value)
-										   .ToList();
+					var styleSheetElements = xdoc.Root
+												 .Descendants()
+												 .Where(e => e.Name.ToString().EndsWith("StyleSheet"));
+					CleanStyleSheets(styleSheetElements);
+					var styleSheets = styleSheetElements
+						.Select(e => e.Attribute("Source"))
+						.Where(e => e != null)
+						.Select(e => e.Value)
+						.ToList();
 					xaml = xdoc.ToString();
 					return new XAMLDocument(filePath, xaml, classAttribute.Value, styleSheets);
 				}
@@ -50,6 +54,22 @@ namespace XAMLator
 			{
 				Log.Exception(ex);
 				return null;
+			}
+		}
+
+		static void CleanStyleSheets(IEnumerable<XElement> elements)
+		{
+			foreach (var element in elements)
+			{
+				var attr = element.Attributes().SingleOrDefault(a => a.Name == "Source");
+				if (attr == null)
+				{
+					continue;
+				}
+				if (attr.Value.StartsWith("/"))
+				{
+					attr.SetValue(Constants.ROOT_REPLACEMENT + attr.Value);
+				}
 			}
 		}
 
