@@ -94,11 +94,16 @@
     <Folder Include="Resources\drawable-xxxhdpi\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\XAMLator.Server.Droid\XAMLator.Server.Droid.csproj">
+    <ProjectReference Include="..\..\XAMLator.Server.Droid\XAMLator.Server.Mono.Droid.csproj">
       <Project>{8634D953-84BF-4BBD-873B-B4339BEEA7BF}</Project>
       <Name>XAMLator.Server.Mono.Droid</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\XAMLator.SampleApp\XAMLator.SampleApp.projitems" Label="Shared" Condition="Exists('..\XAMLator.SampleApp\XAMLator.SampleApp.projitems')" />
  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+    <UsingTask TaskName="AssemblyWeaver" AssemblyFile="..\..\XAMLator.Build.Tasks\bin\$(Configuration)\XAMLator.Build.Tasks.dll" />
+    <!-- this will automatically run after the 'Build' target -->
+    <Target Name="WeaveXAMLator" AfterTargets="_CopyFilesMarkedCopyLocal" BeforeTargets="CopyFilesToOutputDirectory">
+        <AssemblyWeaver Path="..\..\XAMLator.Server.Droid\bin\$(Configuration)\XAMLator.Server.dll" />
+    </Target>
 </Project>

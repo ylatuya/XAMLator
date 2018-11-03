@@ -13,16 +13,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)ConsoleCrayon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DiscoveryBroadcast.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EvalRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExtensionMethods.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DiscoveryBroadcastAddress.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpServer\HttpHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpServer\HttpRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpServer\HttpResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpServer\IRequestProcessor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpServer\RequestProcessor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpServer\Route.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NetworkUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TcpCommunicator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)HttpServer\" />

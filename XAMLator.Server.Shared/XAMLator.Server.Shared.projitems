@@ -9,7 +9,6 @@
     <Import_RootNamespace>XAMLator.Server.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)DiscoveryBroadcaster.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ErrorViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IEvaluator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IPreviewer.cs" />
@@ -25,6 +24,9 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)ErrorPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)IdeIP.txt">
+      <LogicalName>IdeIP</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using XAMLator.HttpServer;
 
 namespace XAMLator.Server
@@ -13,24 +14,22 @@ namespace XAMLator.Server
 	/// Preview server that process HTTP requests, evaluates them in the <see cref="VM"/>
 	/// and preview them with the <see cref="Previewer"/>.
 	/// </summary>
-	public class PreviewServer : RequestProcessor
+	public class PreviewServer
 	{
 		static readonly PreviewServer serverInstance = new PreviewServer();
 
-		const int PORTS_RANGE = 10;
-		DiscoveryBroadcaster broadcaster;
-		HttpHost host;
 		VM vm;
 		TaskScheduler mainScheduler;
 		IPreviewer previewer;
-		int port;
 		bool isRunning;
+		TcpCommunicatorClient client;
 
 		internal static PreviewServer Instance => serverInstance;
 
 		PreviewServer()
 		{
-			Post["/xaml"] = HandleNewXaml;
+			client = new TcpCommunicatorClient();
+			client.DataReceived += HandleDataReceived;
 		}
 
 		public static Task<bool> Run(Dictionary<Type, object> viewModelsMapping = null, IPreviewer previewer = null)
@@ -44,15 +43,9 @@ namespace XAMLator.Server
 			{
 				return true;
 			}
+
 			mainScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-			host = await HttpHost.StartServer(this, Constants.DEFAULT_PORT, PORTS_RANGE);
-			if (host == null)
-			{
-				Log.Error("Couldn't start server");
-				return false;
-			}
-			broadcaster = new DiscoveryBroadcaster(port, true);
-			await broadcaster.Start();
+			await RegisterDevice();
 			if (viewModelsMapping == null)
 			{
 				viewModelsMapping = new Dictionary<Type, object>();
@@ -67,21 +60,50 @@ namespace XAMLator.Server
 			return true;
 		}
 
-		async Task<HttpResponse> HandleNewXaml(HttpRequest request)
+		async Task RegisterDevice()
 		{
-			JsonHttpResponse response = new JsonHttpResponse();
-
-			StreamReader sr = new StreamReader(request.Body, Encoding.UTF8);
-			string json = await sr.ReadToEndAsync();
-			EvalRequest evalRequest = Serializer.DeserializeJson<EvalRequest>(json);
-			EvalResponse evalResponse = new EvalResponse();
-			response.Data = evalResponse;
-			EvalResult result = null;
+			var ideIP = GetIdeIPFromResource();
 			try
 			{
-				result = await vm.Eval(evalRequest, mainScheduler, CancellationToken.None);
-				evalResponse.Messages = result.Messages;
-				evalResponse.Duration = result.Duration;
+				Log.Information($"Connecting to IDE at tcp://{ideIP}:{Constants.DEFAULT_PORT}");
+				await client.Connect(ideIP, Constants.DEFAULT_PORT);
+			}
+			catch (Exception ex)
+			{
+				Log.Error($"Couldn't register device at {ideIP}");
+				Log.Exception(ex);
+			}
+		}
+
+		string GetIdeIPFromResource()
+		{
+			try
+			{
+				using (Stream stream = GetType().Assembly.GetManifestResourceStream(Constants.IDE_IP_RESOURCE_NAME))
+				using (StreamReader reader = new StreamReader(stream))
+				{
+					return reader.ReadToEnd().Split('\n')[0].Trim();
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.Exception(ex);
+				return null;
+			}
+		}
+
+		async void HandleDataReceived(object sender, object e)
+		{
+			await HandleEvalRequest((e as JContainer).ToObject<EvalRequest>());
+		}
+
+		async Task HandleEvalRequest(EvalRequest request)
+		{
+			EvalResponse evalResponse = new EvalResponse();
+			EvalResult result;
+			try
+			{
+				result = await vm.Eval(request, mainScheduler, CancellationToken.None);
 				Log.Information($"Visualizing result {result.Result}");
 				if (result.HasResult)
 				{
@@ -108,13 +130,10 @@ namespace XAMLator.Server
 						await previewer.NotifyError(new ErrorViewModel("Oh no! An evaluation error!", result));
 					});
 				}
-				return response;
 			}
 			catch (Exception ex)
 			{
 				Log.Exception(ex);
-				response.StatusCode = HttpStatusCode.InternalServerError;
-				return response;
 			}
 		}
 	}

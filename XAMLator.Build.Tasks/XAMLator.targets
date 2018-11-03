@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project>
+    <UsingTask TaskName="XAMLator.Build.Tasks.AssemblyWeaver" AssemblyFile="$(MSBuildThisFileDirectory)XAMLator.Build.Tasks.dll" />
+    <Choose>
+        <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework'">
+            <PropertyGroup>
+                <XAMLatorAssemblyPath>$(MSBuildThisFileDirectory)..\lib\net47\XAMLator.Server.dll</XAMLatorAssemblyPath>
+            </PropertyGroup>
+        </When>
+        <When Condition="$(TargetFrameworkIdentifier) == 'Xamarin.iOS'">
+            <PropertyGroup>
+                <XAMLatorAssemblyPath>$(MSBuildThisFileDirectory)..\lib\xamarinios10\XAMLator.Server.dll</XAMLatorAssemblyPath>
+            </PropertyGroup>
+        </When>
+        <When Condition="$(TargetFrameworkIdentifier) == 'MonoAndroid'">
+            <PropertyGroup>
+                <XAMLatorAssemblyPath>$(MSBuildThisFileDirectory)..\lib\monoandroid81\XAMLator.Server.dll</XAMLatorAssemblyPath>
+            </PropertyGroup>
+        </When>
+    </Choose>
+    <!-- this will automatically run after the 'Build' target -->
+    <Target Name="WeaveXAMLator" BeforeTargets="_CopyFilesMarkedCopyLocal">
+        <AssemblyWeaver Path="$(XAMLatorAssemblyPath)" />
+    </Target>
+</Project>

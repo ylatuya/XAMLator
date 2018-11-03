@@ -54,7 +54,6 @@ namespace XAMLator.Client
 					boundDoc.DocumentParsed += HandleDocumentParsed;
 				}
 				EmitDocumentChanged();
-
 			}
 		}
 

@@ -29,6 +29,15 @@ steps:
 - script: msbuild /p:Configuration=Release XAMLator.Server.iOS/XAMLator.Server.Mono.iOS.csproj
   displayName: 'Build XAMLator.Server.Mono.iOS'
 
+- script: msbuild /p:Configuration=Release XAMLator.Build.Tasks/XAMLator.Build.Tasks.csproj
+  displayName: 'Build XAMLator.Build.Tasks'
+
+- script: msbuild /p:Configuration=Release XAMLator.Build.Tasks.Tests/XAMLator.Build.Tasks.Tests.csproj
+  displayName: 'Build XAMLator.Build.Tasks.Tests'
+
+- script: mono ../../../packages/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe XAMLator.Build.Tasks.Tests.dll
+  workingDirectory: XAMLator.Build.Tasks.Tests/bin/Release
+
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
