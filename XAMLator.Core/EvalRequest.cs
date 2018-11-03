@@ -10,6 +10,7 @@ namespace XAMLator
 		public string Declarations;
 		public string NewTypeExpression;
 		public string Xaml;
+		public Dictionary<string, string> StyleSheets;
 		public bool NeedsRebuild;
 	}
 

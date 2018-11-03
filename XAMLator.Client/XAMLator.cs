@@ -48,7 +48,8 @@ namespace XAMLator.Client
 				Declarations = classDecl.Code,
 				NeedsRebuild = classDecl.NeedsRebuild,
 				NewTypeExpression = classDecl.NewInstanceExpression,
-				Xaml = classDecl.Xaml
+				Xaml = classDecl.Xaml,
+				StyleSheets = classDecl.StyleSheets
 			};
 
 			await server.Send(request);

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Xamarin.Forms.Xaml;
 
 namespace XAMLator.Server
 {
@@ -11,13 +13,14 @@ namespace XAMLator.Server
 	public class VM
 	{
 		static MethodInfo loadXAML;
-		static string currentXAML;
+		static EvalRequest currentEvalRequest;
 		readonly object mutex = new object();
 		IEvaluator evaluator;
 
 		static VM()
 		{
 			ResolveLoadMethod();
+			ReplaceResourcesProvider();
 		}
 
 		public VM()
@@ -32,7 +35,7 @@ namespace XAMLator.Server
 		/// <param name="view">View.</param>
 		public static void LoadXaml(object view)
 		{
-			loadXAML.Invoke(null, new object[] { view, currentXAML });
+			loadXAML.Invoke(null, new object[] { view, currentEvalRequest.Xaml });
 		}
 
 		public Task<EvalResult> Eval(EvalRequest code, TaskScheduler mainScheduler, CancellationToken token)
@@ -67,7 +70,7 @@ namespace XAMLator.Server
 
 			sw.Start();
 
-			currentXAML = code.Xaml;
+			currentEvalRequest = code;
 			if (!await evaluator.EvaluateExpression(code.NewTypeExpression,
 													   code.NeedsRebuild ? code.Declarations : null,
 													   evalResult))
@@ -77,7 +80,6 @@ namespace XAMLator.Server
 													  code.Declarations,
 													  evalResult);
 			}
-
 			if (evalResult.Result != null)
 			{
 				LoadXAML(evalResult.Result, code.Xaml, evalResult);
@@ -117,6 +119,40 @@ namespace XAMLator.Server
 			var xamlLoader = xamlAssembly.GetType("Xamarin.Forms.Xaml.XamlLoader");
 			loadXAML = xamlLoader.GetRuntimeMethod("Load", new[] { typeof(object), typeof(string) });
 		}
+
+		static void ReplaceResourcesProvider()
+		{
+			var asms = AppDomain.CurrentDomain.GetAssemblies();
+			var xamlAssembly = Assembly.Load(new AssemblyName("Xamarin.Forms.Core"));
+			var xamlLoader = xamlAssembly.GetType("Xamarin.Forms.Internals.ResourceLoader");
+			var providerField = (xamlLoader as TypeInfo).DeclaredFields.Single(f => f.Name == "resourceProvider");
+			providerField.SetValue(null, (Func<AssemblyName, string, string>)LoadResource);
+		}
+
+		static string LoadResource(AssemblyName assemblyName, string name)
+		{
+			Log.Information($"Resolving resource {name}");
+			if (name.EndsWith(".xaml"))
+			{
+				return currentEvalRequest.Xaml;
+			}
+			if (name.EndsWith(".css"))
+			{
+				return currentEvalRequest.StyleSheets[name];
+			}
+			return null;
+		}
+
+		internal static string GetResourceIdForPath(Assembly assembly, string path)
+		{
+			foreach (var xria in assembly.GetCustomAttributes<XamlResourceIdAttribute>())
+			{
+				if (xria.Path == path)
+					return xria.ResourceId;
+			}
+			return null;
+		}
+
 	}
 }
 

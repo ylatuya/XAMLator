@@ -40,9 +40,9 @@ namespace XAMLator.Client
 			{
 				if (xamlDocument == null)
 				{
-					xamlDocument = XAMLDocument.Parse(text);
+					xamlDocument = XAMLDocument.Parse(fileName, text);
 				}
-				await xamlClass.UpdateXaml(xamlDocument.XAML);
+				await xamlClass.UpdateXaml(xamlDocument);
 			}
 			// The document is code behind
 			else if (fileName.EndsWith(".xaml.cs"))
@@ -97,7 +97,7 @@ namespace XAMLator.Client
 
 			// FIXME: Handle XF views without XAML
 			// Parse the XAML file 
-			xamlDocument = XAMLDocument.Parse(xaml);
+			xamlDocument = XAMLDocument.Parse(xamlFilePath, xaml);
 			if (xamlDocument == null)
 			{
 				Log.Error("Error parsing XAML");
@@ -118,13 +118,12 @@ namespace XAMLator.Client
 				var className = xamlDocument.Type.Split('.').Last();
 				var classDeclaration = FormsViewClassDeclaration.FindClass(syntaxTree, className);
 				xamlClass = new FormsViewClassDeclaration(classDeclaration, semanticModel,
-													 codeBehindFilePath, xamlFilePath, xamlDocument.XAML);
+													 codeBehindFilePath, xamlDocument);
 			}
 			// Create a new class declaration instance from the XAML
 			else
 			{
-				xamlClass = new FormsViewClassDeclaration(codeBehindFilePath, xamlFilePath,
-														 xamlDocument.XAML, xamlDocument.Type);
+				xamlClass = new FormsViewClassDeclaration(codeBehindFilePath, xamlDocument);
 
 			}
 			return true;
