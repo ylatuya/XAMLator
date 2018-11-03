@@ -368,8 +368,10 @@ namespace XAMLator.Client
 				.NormalizeWhitespace();
 
 			var lines = fullClass.GetText().Lines.Select(l => l.ToString());
-			var code = $"{String.Join("", usings)}\nnamespace {Namespace}\n{{\n {String.Join("\n", lines)} \n}}"
-				.Replace(classDeclarationSyntax.Identifier.Text, $"{ClassName}{counter + 1}");
+			var code = $"{String.Join("", usings)}\nnamespace {Namespace}\n{{\n {String.Join("\n", lines)} \n}}";
+			// Make sure we only replace the class declaration and the constructors
+			code = code.Replace($" {ClassName} ", $" {ClassName}{counter + 1} ");
+			code = code.Replace($" {ClassName}(", $" {ClassName}{counter + 1}(");
 			if (code != Code)
 			{
 				Code = code;
