@@ -123,7 +123,8 @@ For CSS update, once the CSS has been modified you have to open the view you wan
 
 ## Customization
 
-XAMLator uses modal navigation to preview pages as it's the only kind of navigation that works globally in all platforms. Hierachical navigation requires the navigation to be performed from a NavigationPage that it's not always available in all apps and it might vary depending on the MVVM framework you use. For XAMLator it's also not possible to now how you are performing a navgitation for given page since you could do it hierarchical, or modal, so if you happen to use this page with an hierarchical navigatio, the NavigationBar will not be visible.
+XAMLator uses modal navigation to preview pages since it's the only kind of navigation that works globally in all platforms. Hierachical navigation requires the navigation to be performed from a NavigationPage, that it's not always available in all apps and it might vary depending on the MVVM framework you use. For XAMLator, it's also impossible to know how you are performing a navagitation for a given page as you could do it hierarchical, or modal, so if you happen to use this page with an hierarchical navigation, the NavigationBar will not be visible.
+
 The navigation can be easilly customized with a new Previewer:
 
 ```csharp
