@@ -156,3 +156,8 @@ You can use your new previewer in the server initialization
 * Code behind updates only works if you edit the xaml.cs file. If you edit any other class, like a ViewModel, you will have to recompile.
 * CSS updates do not apply automatically to the current view, you have to reopen the view in the editor to have them applied.
 
+## Attribution
+
+Support for code reloading was achieved thanks to [Continous](https://github.com/praeclarum/Continuous) from [@praeclarum](https://twitter.com/praeclaruma).
+It was a great source to understand how Mono's evaluator works and support reloading of code behind.
+Thanks!
