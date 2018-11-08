@@ -99,7 +99,7 @@ protected override void OnCreate(Bundle bundle)
 ### iOS additional setup
 
 For iOS applications you have to pass the `--enable-repl` option to the mtouch additional arguments.
-![enable-repl](https://raw.githubusercontent.com/ylatuya/XAMLator/master/docs/enable-repl.png)
+<img src="https://raw.githubusercontent.com/ylatuya/XAMLator/master/docs/enable-repl.png" alt="enable-repl" width="300">
 
 ### Android Emulator additional setup
 
@@ -124,8 +124,8 @@ For CSS update, once the CSS has been modified you have to open the view you wan
 ### Previewing in multiple devices
 
 To use the previewer in several devices at the same time you only need to start the application several times, one for each platform and device you want to preview. You can easilly do it using the "Run Item" option in the project's menu.
-![multiple devices](https://raw.githubusercontent.com/ylatuya/XAMLator/master/docs/multiple-devices.png)
 
+<img src="https://raw.githubusercontent.com/ylatuya/XAMLator/master/docs/multiple-devices.png" alt="multiple-devices" width="300">
 
 ## Customization
 
