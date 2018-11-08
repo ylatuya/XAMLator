@@ -71,15 +71,10 @@ namespace XAMLator.Server
 			sw.Start();
 
 			currentEvalRequest = code;
-			if (!await evaluator.EvaluateExpression(code.NewTypeExpression,
-													   code.NeedsRebuild ? code.Declarations : null,
-													   evalResult))
-			{
-				// Try again recompiling just in case
-				await evaluator.EvaluateExpression(code.NewTypeExpression,
-													  code.Declarations,
-													  evalResult);
-			}
+			await evaluator.EvaluateExpression(code.NewTypeExpression,
+											   code.NeedsRebuild ? code.Declarations : null,
+											   evalResult);
+
 			if (evalResult.Result != null)
 			{
 				LoadXAML(evalResult.Result, code.Xaml, evalResult);
@@ -131,7 +126,7 @@ namespace XAMLator.Server
 		static string LoadResource(AssemblyName assemblyName, string name)
 		{
 			Log.Information($"Resolving resource {name}");
-			if (name.EndsWith(".xaml"))
+			if (name == currentEvalRequest.XamlResourceName)
 			{
 				return currentEvalRequest.Xaml;
 			}

@@ -12,6 +12,7 @@ namespace XAMLator
 		public string Xaml;
 		public Dictionary<string, string> StyleSheets;
 		public bool NeedsRebuild;
+		public string XamlResourceName;
 	}
 
 	public class EvalMessage : INotifyPropertyChanged
