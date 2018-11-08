@@ -131,7 +131,7 @@ namespace XAMLator.Server
 		static string LoadResource(AssemblyName assemblyName, string name)
 		{
 			Log.Information($"Resolving resource {name}");
-			if (name.EndsWith(".xaml"))
+			if (name == currentEvalRequest.XamlResourceName)
 			{
 				return currentEvalRequest.Xaml;
 			}

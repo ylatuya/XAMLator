@@ -49,6 +49,7 @@ namespace XAMLator.Client
 				NeedsRebuild = classDecl.NeedsRebuild,
 				NewTypeExpression = classDecl.NewInstanceExpression,
 				Xaml = classDecl.Xaml,
+				XamlResourceName = classDecl.XamlResourceId,
 				StyleSheets = classDecl.StyleSheets
 			};
 
