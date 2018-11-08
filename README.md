@@ -121,6 +121,12 @@ In Code Behind, changes are applied as you type and one the IDE as finished anal
 
 For CSS update, once the CSS has been modified you have to open the view you want to preview for changes to be applied (in future versions this will be automatic)
 
+### Previewing in multiple devices
+
+To use the previewer in several devices at the same time you only need to start the application several times, one for each platform and device you want to preview. You can easilly do it using the "Run Item" option in the project's menu.
+![multiple devices](https://raw.githubusercontent.com/ylatuya/XAMLator/master/docs/multiple-devices.png)
+
+
 ## Customization
 
 XAMLator uses modal navigation to preview pages since it's the only kind of navigation that works globally in all platforms. Hierachical navigation requires the navigation to be performed from a NavigationPage, that it's not always available in all apps and it might vary depending on the MVVM framework you use. For XAMLator, it's also impossible to know how you are performing a navagitation for a given page as you could do it hierarchical, or modal, so if you happen to use this page with an hierarchical navigation, the NavigationBar will not be visible.
