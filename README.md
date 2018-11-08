@@ -27,7 +27,7 @@ XAMLator works on a very different way, the code updates are sent to the device 
 
 XAMLator is like [Live XAML](https://www.livexaml.com/) but open source, hence free, and with live code behind updates!
 
-## Vistual Studio plugin Installation
+## Visual Studio plugin Installation
 
 ### macOS
 
