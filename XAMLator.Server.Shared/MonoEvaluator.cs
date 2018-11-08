@@ -27,10 +27,6 @@ namespace XAMLator.Server
 				result.Result = eval.Evaluate(expression);
 				return Task.FromResult(true);
 			}
-			catch (InternalErrorException)
-			{
-				eval = null;
-			}
 			catch (Exception ex)
 			{
 				Log.Error($"Error creating a new instance of {expression}");
@@ -42,6 +38,11 @@ namespace XAMLator.Server
 				{
 					result.Messages = new EvalMessage[] { new EvalMessage("error", ex.ToString()) };
 				}
+				if (!result.HasResult && result.Messages.Length == 0)
+				{
+					result.Messages = new EvalMessage[] { new EvalMessage("error", "Internal Error") };
+				}
+				eval = null;
 			}
 			return Task.FromResult(false);
 		}
