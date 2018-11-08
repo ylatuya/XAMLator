@@ -10,7 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)XAMLator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HttpClient.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DocumentParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FormsViewClassDeclaration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)XAMLDocument.cs" />
