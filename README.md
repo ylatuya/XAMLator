@@ -162,6 +162,14 @@ You can use your new previewer in the server initialization
 * Code behind updates only works if you edit the xaml.cs file. If you edit any other class, like a ViewModel, you will have to recompile.
 * CSS updates do not apply automatically to the current view, you have to reopen the view in the editor to have them applied.
 
+## Contributors
+### Desing choices
+#### Why isn't Xamarin.Server a netstandar2.0 library?
+The C# evaluator is implemented using Mono.CSharp which isn't available as a netstandard2.0 library. There is an IEvaluator implementation using Roslyn's Scripting API but it doesn't work on Android and iOS https://github.com/dotnet/roslyn/issues/24442
+#### Why are XAMLator.Server.{iOS|Android|Gtk} built with a single project using multi-targets?
+Multi-targets are [not fully supported in vs4mac](https://developercommunity.visualstudio.com/content/problem/62584/vs4mac-not-properly-handling-msbuildsdk-style-proj.html)
+
+
 ## Attribution
 
 Support for code reloading was achieved thanks to [Continous](https://github.com/praeclarum/Continuous) from [@praeclarum](https://twitter.com/praeclaruma).
