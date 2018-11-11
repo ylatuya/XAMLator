@@ -25,9 +25,7 @@ namespace XAMLator.Server
 			catch (CompilationErrorException ex)
 			{
 				Log.Error($"Error evaluating {evalExpression}");
-				result.Messages = new EvalMessage[] { new EvalMessage {
-						MessageType = "error", Text = ex.ToString()}
-				};
+				result.Messages = new EvalMessage[] { new EvalMessage("error", ex.ToString()) };
 			}
 			return false;
 		}
