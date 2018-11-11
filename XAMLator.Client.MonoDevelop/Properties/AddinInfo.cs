@@ -28,12 +28,12 @@ using Mono.Addins;
 using Mono.Addins.Description;
 
 [assembly: Addin(
-	"XAMLator.Client.MonoDevelop",
+	"XAMLator",
 	Namespace = "XAMLator.Client.MonoDevelop",
 	Version = "1.0.4"
 )]
 
-[assembly: AddinName("XAMLator.Client.MonoDevelop")]
+[assembly: AddinName("XAMLator")]
 [assembly: AddinCategory("IDE extensions")]
-[assembly: AddinDescription("XAMLator.Client.MonoDevelop")]
+[assembly: AddinDescription("Live previewer for Xamarin.Forms")]
 [assembly: AddinAuthor("Andoni Morales Fluendo S.A.")]

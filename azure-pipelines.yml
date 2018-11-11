@@ -53,7 +53,7 @@ steps:
 - script: /Applications/Visual\ Studio.app/Contents/MacOS/vstool setup pack XAMLator.Client.MonoDevelop/bin/Release/net461/XAMLator.Client.MonoDevelop.dll
   displayName: 'Build vs4mac Addin'
 
-- script: mv XAMLator.Client.MonoDevelop.XAMLator.Client.MonoDevelop_*.mpack $(Build.ArtifactStagingDirectory)/XAMLator.Client.MonoDevelop.mpack
+- script: mv XAMLator.*.mpack  $(Build.ArtifactStagingDirectory)/
   displayName: 'Copy addin'
 
 - task: PublishBuildArtifacts@1
