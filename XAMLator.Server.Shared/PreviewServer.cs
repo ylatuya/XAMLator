@@ -22,6 +22,7 @@ namespace XAMLator.Server
 		IPreviewer previewer;
 		bool isRunning;
 		TcpCommunicatorClient client;
+		ErrorViewModel errorViewModel;
 
 		internal static PreviewServer Instance => serverInstance;
 
@@ -29,6 +30,7 @@ namespace XAMLator.Server
 		{
 			client = new TcpCommunicatorClient();
 			client.DataReceived += HandleDataReceived;
+			errorViewModel = new ErrorViewModel();
 		}
 
 		public static Task<bool> Run(Dictionary<Type, object> viewModelsMapping = null, IPreviewer previewer = null)
@@ -54,6 +56,7 @@ namespace XAMLator.Server
 				previewer = new Previewer(viewModelsMapping);
 			}
 			this.previewer = previewer;
+			errorViewModel.CloseCommand = previewer.CloseCommand;
 			vm = new VM();
 			isRunning = true;
 			return true;
@@ -115,7 +118,8 @@ namespace XAMLator.Server
 						}
 						catch (Exception ex)
 						{
-							await previewer.NotifyError(new ErrorViewModel("Oh no! An exception!", ex));
+							errorViewModel.SetError("Oh no! An exception!", ex);
+							await previewer.NotifyError(errorViewModel);
 							tcs.SetException(ex);
 						}
 					});
@@ -125,7 +129,8 @@ namespace XAMLator.Server
 				{
 					Xamarin.Forms.Device.BeginInvokeOnMainThread(async () =>
 					{
-						await previewer.NotifyError(new ErrorViewModel("Oh no! An evaluation error!", result));
+						errorViewModel.SetError("Oh no! An evaluation error!", result);
+						await previewer.NotifyError(errorViewModel);
 					});
 				}
 			}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace XAMLator.Server
@@ -11,26 +12,30 @@ namespace XAMLator.Server
 	/// </summary>
 	public class Previewer : IPreviewer
 	{
-		bool presented;
 		protected PreviewPage previewPage;
 		protected ErrorPage errorPage;
 		protected Dictionary<Type, object> viewModelsMapping;
+		bool presented;
+		ICommand closeCommand;
 
 		public Previewer(Dictionary<Type, object> viewModelsMapping)
 		{
 			this.viewModelsMapping = viewModelsMapping;
+			errorPage = new ErrorPage();
+			closeCommand = new Command(() =>
+			{
+				HidePreviewPage(previewPage);
+				presented = false;
+			});
 			var quitLive = new ToolbarItem
 			{
 				Text = "Quit live preview",
-				Command = new Command(() =>
-				{
-					HidePreviewPage(previewPage);
-					presented = false;
-				}),
+				Command = closeCommand
 			};
 			previewPage = new PreviewPage(quitLive);
-			errorPage = new ErrorPage();
 		}
+
+		public ICommand CloseCommand => closeCommand;
 
 		/// <summary>
 		/// Preview the specified evaluation result.
