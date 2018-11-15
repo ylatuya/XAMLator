@@ -2,7 +2,8 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:XAMLator.SampleApp"
-             x:Class="XAMLator.SampleApp.PageWithCSS">
+             x:Class="XAMLator.SampleApp.PageWithCSS"
+             ControlTemplate="{StaticResource TealTemplate}">
     <ContentPage.Resources>
         <StyleSheet Source="/Global.css"/>
     </ContentPage.Resources>
