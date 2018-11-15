@@ -21,7 +21,7 @@
 
 Visual Studio already has a XAML previewer, but it has some limitations. The previewer only reads a XAML and tries to render it, whithout further context. If your view relies on any static initialization of the application, you are welcomed with a beatiful exception.
 
-XAMLator works on a very different way, the code updates are sent to the device where the application is running and the application itself renders the view, where the applicatio is now correctly initialized. Another benefit is that you preview it on a real device and you can even preview it in several devices at the same time: an Android tablet, an iPhone X, an iPad, a desktop app... as many as you want!
+XAMLator works on a very different way, the code updates are sent to the device where the application is running and the application itself renders the view, where the application is now correctly initialized. Another benefit is that you preview it on a real device and you can even preview it in several devices at the same time: an Android tablet, an iPhone X, an iPad, a desktop app... as many as you want!
 
 ## How does XAMLator compare to existing solutions?
 
@@ -129,9 +129,9 @@ To use the previewer in several devices at the same time you only need to start 
 
 ## Customization
 
-XAMLator uses modal navigation to preview pages since it's the only kind of navigation that works globally in all platforms. Hierachical navigation requires the navigation to be performed from a NavigationPage, that it's not always available in all apps and it might vary depending on the MVVM framework you use. For XAMLator, it's also impossible to know how you are performing a navagitation for a given page as you could do it hierarchical, or modal, so if you happen to use this page with an hierarchical navigation, the NavigationBar will not be visible.
+XAMLator uses modal navigation to preview pages since it's the only kind of navigation that works globally in all platforms. Hierachical navigation requires the navigation to be performed from a NavigationPage, that it's not always available in all apps and it might vary depending on the MVVM framework you use. For XAMLator, it's also impossible to know how you are performing a navigation for a given page as you could do it hierarchical, or modal, so if you happen to use this page with an hierarchical navigation, the NavigationBar will not be visible.
 
-The navigation can be easilly customized with a new Previewer:
+The navigation can be easily customized with a new Previewer:
 
 ```csharp
 public class CustomPreviewer : Previewer
@@ -163,9 +163,12 @@ You can use your new previewer in the server initialization
 * CSS updates do not apply automatically to the current view, you have to reopen the view in the editor to have them applied.
 
 ## Contributors
-### Desing choices
-#### Why isn't Xamarin.Server a netstandar2.0 library?
+
+### Design choices
+
+#### Why isn't Xamarin.Server a netstandard2.0 library?
 The C# evaluator is implemented using Mono.CSharp which isn't available as a netstandard2.0 library. There is an IEvaluator implementation using Roslyn's Scripting API but it doesn't work on Android and iOS https://github.com/dotnet/roslyn/issues/24442
+
 #### Why are XAMLator.Server.{iOS|Android|Gtk} built with a single project using multi-targets?
 Multi-targets are [not fully supported in vs4mac](https://developercommunity.visualstudio.com/content/problem/62584/vs4mac-not-properly-handling-msbuildsdk-style-proj.html)
 
