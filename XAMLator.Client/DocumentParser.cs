@@ -22,7 +22,7 @@ namespace XAMLator.Client
 																		  SemanticModel semanticModel)
 		{
 			// FIXME: Support any kind of types, not just Xamarin.Forms views
-			if (!fileName.EndsWith(".xaml") && !fileName.EndsWith(".xaml.cs"))
+			if (!fileName.EndsWith(".xaml") && !fileName.EndsWith("cs"))
 			{
 				return null;
 			}

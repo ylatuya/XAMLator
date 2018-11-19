@@ -48,5 +48,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)PageWithNestedView.xaml.cs">
       <DependentUpon>PageWithNestedView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)PageWithoutXAML.cs" />
   </ItemGroup>
 </Project>
