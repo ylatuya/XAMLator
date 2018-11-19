@@ -103,9 +103,9 @@
     <InterfaceDefinition Include="Main.storyboard" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\XAMLator.Server\XAMLator.Server.Roslyn.csproj">
-      <Project>{9A749589-5DAE-4296-A4FA-B74F2D31C759}</Project>
-      <Name>XAMLator.Server.Roslyn</Name>
+    <ProjectReference Include="..\..\XAMLator.Server.Mac\XAMLator.Server.Mono.Mac.csproj">
+      <Project>{47C93CC1-2606-4130-922A-A1B2895E895E}</Project>
+      <Name>XAMLator.Server.Mono.Mac</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\XAMLator.SampleApp\XAMLator.SampleApp.projitems" Label="Shared" Condition="Exists('..\XAMLator.SampleApp\XAMLator.SampleApp.projitems')" />

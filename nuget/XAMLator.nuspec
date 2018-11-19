@@ -31,6 +31,8 @@
     <file src="../XAMLator.Server.iOS/bin/Release/XAMLator.Server.pdb" target="lib/xamarinios10/XAMLator.Server.pdb" />
     <file src="../XAMLator.Server.Net461/bin/Release/XAMLator.Server.dll" target="lib/net461/XAMLator.Server.dll" />
     <file src="../XAMLator.Server.Net461/bin/Release/XAMLator.Server.pdb" target="lib/net461/XAMLator.Server.pdb" />
+    <file src="../XAMLator.Server.Mac/bin/Release/XAMLator.Server.dll" target="lib/Xamarin.Mac/Xamarin.Server.dll" />
+    <file src="../XAMLator.Server.Mac/bin/Release/XAMLator.Server.pdb" target="lib/Xamarin.Mac/XAMLator.Server.pdb" />
     <file src="../packages/Mono.Cecil.0.10.1/lib/net40/Mono.Cecil.dll" target="build\Mono.Cecil.dll" />
     <file src="../XAMLator.Build.Tasks/XAMLator.targets" target="build\XAMLator.targets" />
     <file src="../XAMLator.Build.Tasks/bin/Release/XAMLator.Build.Tasks.dll" target="build/XAMLator.Build.Tasks.dll" />

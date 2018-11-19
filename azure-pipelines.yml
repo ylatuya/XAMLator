@@ -31,6 +31,9 @@ steps:
 - script: msbuild /p:Configuration=Release XAMLator.Server.iOS/XAMLator.Server.Mono.iOS.csproj
   displayName: 'Build XAMLator.Server.Mono.iOS'
 
+- script: msbuild /p:Configuration=Release XAMLator.Server.Mac/XAMLator.Server.Mono.Mac.csproj
+  displayName: 'Build XAMLator.Server.Mono.Mac'
+
 - script: msbuild /p:Configuration=Release XAMLator.Build.Tasks/XAMLator.Build.Tasks.csproj
   displayName: 'Build XAMLator.Build.Tasks'
 
