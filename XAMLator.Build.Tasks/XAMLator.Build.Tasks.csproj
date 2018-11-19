@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>XAMLator.Build.Tasks</RootNamespace>
     <AssemblyName>XAMLator.Build.Tasks</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <PrimaryOutputKind>build</PrimaryOutputKind>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

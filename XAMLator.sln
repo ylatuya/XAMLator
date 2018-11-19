@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XAMLator.Server.Roslyn", "X
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "XAMLator.Server.Shared", "XAMLator.Server.Shared\XAMLator.Server.Shared.shproj", "{A2330E63-09C1-43FD-BBE3-8699F5D62888}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XAMLator.Server.Mono.Net47", "XAMLator.Server.Net47\XAMLator.Server.Mono.Net47.csproj", "{E3F80ADC-71F8-454E-BA3B-87BD0D78B051}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XAMLator.Server.Mono.Net461", "XAMLator.Server.Net461\XAMLator.Server.Mono.Net461.csproj", "{E3F80ADC-71F8-454E-BA3B-87BD0D78B051}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XAMLator.SampleApp.MacOS", "SampleApp\XAMLator.SampleApp.MacOS\XAMLator.SampleApp.MacOS.csproj", "{38A78D6E-B617-4162-A0BE-EFE260E9C076}"
 EndProject

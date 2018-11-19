@@ -22,10 +22,10 @@ steps:
   inputs:
     restoreSolution: '**/*.sln'
 
-- script: msbuild /p:Configuration=Release XAMLator.Server.Net47/XAMLator.Server.Mono.Net47.csproj 
-  displayName: 'Build XAMLator.Server.Mono.Net47'
+- script: msbuild /p:Configuration=Release XAMLator.Server.Net461/XAMLator.Server.Mono.Net461.csproj
+  displayName: 'Build XAMLator.Server.Mono.Net461'
 
-- script: msbuild /p:Configuration=Release XAMLator.Server.Droid/XAMLator.Server.Mono.Droid.csproj 
+- script: msbuild /p:Configuration=Release XAMLator.Server.Droid/XAMLator.Server.Mono.Droid.csproj
   displayName: 'Build XAMLator.Server.Mono.Droid'
 
 - script: msbuild /p:Configuration=Release XAMLator.Server.iOS/XAMLator.Server.Mono.iOS.csproj
