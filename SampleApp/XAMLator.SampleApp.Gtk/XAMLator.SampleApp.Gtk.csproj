@@ -5,8 +5,9 @@
   <PropertyGroup>
     <ProjectGuid>{040C0E99-7128-4968-AB57-47E3CBFBF2BD}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <RootNamespace>XAMLator.SampleApp.Gtk</RootNamespace>
+    <XFDisableFrameworkVersionValidation>True</XFDisableFrameworkVersionValidation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -59,9 +60,9 @@
     <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\XAMLator.Server.Net47\XAMLator.Server.Mono.Net47.csproj">
+    <ProjectReference Include="..\..\XAMLator.Server.Net461\XAMLator.Server.Mono.Net461.csproj">
       <Project>{E3F80ADC-71F8-454E-BA3B-87BD0D78B051}</Project>
-      <Name>XAMLator.Server.Mono.Net47</Name>
+      <Name>XAMLator.Server.Mono.Net461</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\XAMLator.SampleApp\XAMLator.SampleApp.projitems" Label="Shared" Condition="Exists('..\XAMLator.SampleApp\XAMLator.SampleApp.projitems')" />
