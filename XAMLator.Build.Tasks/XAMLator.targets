@@ -17,6 +17,11 @@
                 <XAMLatorAssemblyPath>$(MSBuildThisFileDirectory)..\lib\monoandroid81\XAMLator.Server.dll</XAMLatorAssemblyPath>
             </PropertyGroup>
         </When>
+        <When Condition="$(TargetFrameworkIdentifier) == 'Xamarin.Mac'">
+            <PropertyGroup>
+                 <XAMLatorAssemblyPath>$(MSBuildThisFileDirectory)..\lib\Xamarin.Mac\XAMLator.Server.dll</XAMLatorAssemblyPath>
+            </PropertyGroup>
+        </When>
     </Choose>
     <!-- this will automatically run after the 'Build' target -->
     <Target Name="WeaveXAMLator" BeforeTargets="_CopyFilesMarkedCopyLocal">
