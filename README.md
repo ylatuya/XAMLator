@@ -2,14 +2,14 @@
 
 # XAMLator live previewer for Xamarin.Forms
 
-**XAMLator** is a live XAML previewer for Xamarin.Forms. Change a **XAML** view, its **code behind** or a **CSS** style sheet in the IDE and you preview it **live** in your application, in a real device or the emulator!
+**XAMLator** is a live XAML previewer for Xamarin.Forms with partial Hot Reload. Change a **XAML** view, its **code behind** or a **CSS** style sheet in the IDE and you preview it **live** in your application. It works on iOS simulators, Android emulators and Android real devices!
 
 ![monkeys](https://raw.githubusercontent.com/ylatuya/XAMLator/master/docs/monkeys.gif)
 
 ## Features:
   1. Works with any kind of Xamarin Forms project and MVVM frameworks.
   2. Live preview in Android and iOS emulators
-  3. Live preview in real devices
+  3. Live preview in real devices (Android only)
   4. Preview in several devices at the same time.
   5. XAML live updates
   6. CSS live updates
@@ -21,7 +21,7 @@
 
 Visual Studio already has a XAML previewer, but it has some limitations. The previewer only reads a XAML and tries to render it, whithout further context. If your view relies on any static initialization of the application, you are welcomed with a beatiful exception.
 
-XAMLator works on a very different way, the code updates are sent to the device where the application is running and the application itself renders the view, where the application is now correctly initialized. Another benefit is that you preview it on a real device and you can even preview it in several devices at the same time: an Android tablet, an iPhone X, an iPad, a desktop app... as many as you want!
+XAMLator works on a very different way, the code updates are sent to the device where the application is running and the application itself renders the view, where the application is now correctly initialized. Another benefit is that you preview it on a real device and you can even preview it in several devices at the same time: an Android tablet, an iPhone X simulator, an iPad simulator, a desktop app... as many as you want!
 
 ## How does XAMLator compare to existing solutions?
 
@@ -103,7 +103,7 @@ For iOS applications you have to pass the `--enable-repl` option to the mtouch a
 
 ### Android Emulator additional setup
 
-To run it in the adnroid emulator you will have to reverse the TCP port 8488 so the emulator can reach the IDE when connection to localhost:8488
+To run it in the android emulator you will have to reverse the TCP port 8488 so the emulator can reach the IDE when connection to localhost:8488
 
 ```bash
 $ adb reverse tcp:8488 tcp:8488
@@ -123,7 +123,7 @@ For CSS update, once the CSS has been modified you have to open the view you wan
 
 ### Previewing in multiple devices
 
-To use the previewer in several devices at the same time you only need to start the application several times, one for each platform and device you want to preview. You can easilly do it using the "Run Item" option in the project's menu.
+To use the previewer in several devices/simulators at the same time you only need to start the application several times, one for each platform and device you want to preview. You can easilly do it using the "Run Item" option in the project's menu.
 
 <img src="https://raw.githubusercontent.com/ylatuya/XAMLator/master/docs/multiple-devices.png" alt="multiple-devices" width="300">
 
@@ -161,6 +161,7 @@ You can use your new previewer in the server initialization
 
 * Code behind updates only works if you edit the xaml.cs file. If you edit any other class, like a ViewModel, you will have to recompile.
 * CSS updates do not apply automatically to the current view, you have to reopen the view in the editor to have them applied.
+* XAMLator doesn't work on iOS devices because [dynamic code generation](https://docs.microsoft.com/en-us/xamarin/ios/internals/limitations#no-dynamic-code-generation) is not supported on iOS.
 
 ## Contributors
 
