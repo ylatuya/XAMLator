@@ -165,6 +165,13 @@ You can use your new previewer in the server initialization
 
 ## Contributors
 
+### Hacking
+
+#### Visual Studio for Mac
+Hacking and debugging XAMLator's server and its vs4mac add-in is very easy installing the [AddinMaker add-in](https://github.com/mhutch/MonoDevelop.AddinMaker), using the Extension Manager (Visual Studio Community->Extensions...).
+Once you have the add-in installed, simply run the XAMLator.Client.MonoDevelop project. It will start a new instance of the IDE with the plugin running in it. In this new instance you can reopen the XAMLator.sln solution and run the sample app. Debugging of the client side will happen in the first instance of vs4mac, debugging the server will happen in the second instance of vs4mac.
+Note that for development you should disable the XAMLator add-in, if you have it already installed, to prevent conflicts between the installed version and the one running in the new instance.
+
 ### Design choices
 
 #### Why isn't Xamarin.Server a netstandard2.0 library?
