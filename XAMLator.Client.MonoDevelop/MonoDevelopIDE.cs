@@ -36,7 +36,6 @@ namespace XAMLator.Client
 			if (boundDoc != null)
 			{
 				boundDoc.Saved -= HandleDocumentSaved;
-				boundDoc.DocumentParsed -= HandleDocumentParsed;
 				boundDoc = null;
 			}
 
@@ -45,14 +44,7 @@ namespace XAMLator.Client
 			{
 				boundDoc = doc;
 				Log.Information($"Monitoring document {boundDoc.FileName}");
-				if (ext == ".xaml")
-				{
-					boundDoc.Saved += HandleDocumentSaved;
-				}
-				else
-				{
-					boundDoc.DocumentParsed += HandleDocumentParsed;
-				}
+				boundDoc.Saved += HandleDocumentSaved;
 				EmitDocumentChanged();
 			}
 		}
@@ -66,16 +58,10 @@ namespace XAMLator.Client
 																	   semanticModel));
 		}
 
-		async void HandleDocumentParsed(object sender, EventArgs e)
+		async void HandleDocumentSaved(object sender, EventArgs e)
 		{
 			EmitDocumentChanged(await boundDoc.AnalysisDocument.GetSyntaxTreeAsync(),
-								 await boundDoc.AnalysisDocument.GetSemanticModelAsync());
-
-		}
-
-		void HandleDocumentSaved(object sender, EventArgs e)
-		{
-			EmitDocumentChanged();
+					 await boundDoc.AnalysisDocument.GetSemanticModelAsync());
 		}
 
 		public Task RunTarget(string taskName)
