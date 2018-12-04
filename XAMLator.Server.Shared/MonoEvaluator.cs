@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Mono.CSharp;
@@ -31,38 +32,34 @@ namespace XAMLator.Server
 
 		public Task<bool> EvaluateCode(string code, EvalResult result)
 		{
+			if (string.IsNullOrEmpty(code))
+			{
+				return Task.FromResult(false);
+			}
+
 			EnsureConfigured();
+
 			try
 			{
-				object retResult;
-				bool hasResult;
-
 				printer.Reset();
-				if (!String.IsNullOrEmpty(code))
-				{
-					var ret = eval.Evaluate(code, out retResult, out hasResult);
-				}
-				result.Result = eval.Evaluate(expression);
+				eval.Evaluate(code, out object retResult, out bool result_set);
+				result.Result = retResult;
 				return Task.FromResult(true);
 			}
 			catch (Exception ex)
 			{
-				Log.Error($"Error creating a new instance of {expression}");
+				Log.Error($"Error evalutaing code");
+				eval = null;
 				if (printer.Messages.Count != 0)
 				{
 					result.Messages = printer.Messages.ToArray();
 				}
 				else
 				{
-					result.Messages = new EvalMessage[] { new EvalMessage("error", ex.ToString()) };
+					result.Messages = new[] { new EvalMessage("error", ex.ToString()) };
 				}
-				if (!result.HasResult && result.Messages.Length == 0)
-				{
-					result.Messages = new EvalMessage[] { new EvalMessage("error", "Internal Error") };
-				}
-				eval = null;
+				return Task.FromResult(false);
 			}
-			return Task.FromResult(false);
 		}
 
 		void EnsureConfigured()
@@ -90,7 +87,7 @@ namespace XAMLator.Server
 		void LoadAssembly(Assembly assembly)
 		{
 			var name = assembly.GetName().Name;
-			if (name == "mscorlib" || name == "System" || name == "System.Core")
+			if (name == "mscorlib" || name == "System" || name == "System.Core" || name.StartsWith("eval-"))
 				return;
 			eval?.ReferenceAssembly(assembly);
 		}

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace XAMLator.Server
 {
@@ -8,10 +7,10 @@ namespace XAMLator.Server
 		/// <summary>
 		/// Evaluates an expression and code before the expression if requested.
 		/// </summary>
-		/// <returns>A new instance of the type.</returns>
-		/// <param name="evalExpression">Type name.</param>
+		/// <returns>True if succeeded.</returns>
 		/// <param name="code">The class code.</param>
-		Task<bool> EvaluateExpression(string evalExpression, string code, EvalResult evalResult);
+		/// <param name="result">Eval result.</param>
+		Task<bool> EvaluateCode(string code, EvalResult result);
 
 		/// <summary>
 		/// Check if evaluation is supported. This can fail in iOS real devices

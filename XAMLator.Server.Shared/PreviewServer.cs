@@ -108,7 +108,7 @@ namespace XAMLator.Server
 			try
 			{
 				result = await vm.Eval(request, mainScheduler, CancellationToken.None);
-				if (result.HasResult)
+				if (result.ResultType != null)
 				{
 					var tcs = new TaskCompletionSource<bool>();
 					Xamarin.Forms.Device.BeginInvokeOnMainThread(async () =>

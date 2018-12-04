@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -145,13 +146,7 @@ namespace XAMLator.Client
 		/// document and still needs it's class initialization.
 		/// </summary>
 		/// <value><c>true</c> if needs class initialization; otherwise, <c>false</c>.</value>
-		public bool NeedsClassInitialization { get; private set; } = true;
-
-		/// <summary>
-		/// Gets the expression to build a new instance of the class.
-		/// </summary>
-		/// <value>The new type expression.</value>
-		public string NewInstanceExpression => $"new {CurrentFullNamespace} ()";
+		public bool NeedsClassInitialization { get; set; } = true;
 
 		/// <summary>
 		/// Gets the XAML of the view
@@ -164,6 +159,12 @@ namespace XAMLator.Client
 		/// </summary>
 		/// <value>The code.</value>
 		public string Code { get; private set; }
+
+		/// <summary>
+		/// Gets the original code without types renamed.
+		/// </summary>
+		/// <value>The original code.</value>
+		public string OriginalCode { get; private set; }
 
 		/// <summary>
 		/// Gets a value indicating whether the code of the view has changed
@@ -182,7 +183,7 @@ namespace XAMLator.Client
 
 		string CurrentClassName => counter == 0 ? ClassName : $"{ClassName}{counter}";
 
-		string CurrentFullNamespace
+		public string CurrentFullNamespace
 		{
 			get
 			{
@@ -378,15 +379,27 @@ namespace XAMLator.Client
 
 			var lines = fullClass.GetText().Lines.Select(l => l.ToString());
 			var code = $"{String.Join("", usings)}\nnamespace {Namespace}\n{{\n {String.Join("\n", lines)} \n}}";
-			// Make sure we only replace the class declaration and the constructors
-			code = code.Replace($" {ClassName} ", $" {ClassName}{counter + 1} ");
-			code = code.Replace($" {ClassName}(", $" {ClassName}{counter + 1}(");
-			if (code != Code)
+			if (code != OriginalCode)
 			{
-				Code = code;
-				NeedsRebuild = true;
 				counter++;
+				OriginalCode = code;
+				Code = ReplaceTypeName(code, ClassName, counter);
+				NeedsRebuild = true;
 			}
+		}
+
+		/// <summary>
+		/// Replaces the name of the existing types in the code with the new type name.
+		/// </summary>
+		/// <returns>The type name.</returns>
+		/// <param name="code">Code.</param>
+		/// <param name="typeName">Type name.</param>
+		/// <param name="counter">Counter.</param>
+		string ReplaceTypeName(string code, string typeName, int counter)
+		{
+			// Make sure we only replace the class declaration and the constructors
+			return Regex.Replace(code, $"(\\W+)({typeName})(\\W+)",
+				$"$1{ClassName}{counter}$3", RegexOptions.Multiline);
 		}
 
 		/// <summary>

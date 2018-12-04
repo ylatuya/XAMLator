@@ -47,7 +47,8 @@ namespace XAMLator.Client
 			{
 				Declarations = classDecl.Code,
 				NeedsRebuild = classDecl.NeedsRebuild,
-				NewTypeExpression = classDecl.NewInstanceExpression,
+				OriginalTypeName = classDecl.FullNamespace,
+				NewTypeName = classDecl.CurrentFullNamespace,
 				Xaml = classDecl.Xaml,
 				XamlResourceName = classDecl.XamlResourceId,
 				StyleSheets = classDecl.StyleSheets
