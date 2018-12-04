@@ -8,8 +8,6 @@ namespace XAMLator.Server
 {
 	public interface IPreviewer
 	{
-		ICommand CloseCommand { get; }
-
 		Task Preview(EvalResult res);
 
 		Task NotifyError(ErrorViewModel errorViewModel);

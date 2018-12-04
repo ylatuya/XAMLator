@@ -64,6 +64,7 @@ namespace XAMLator.Server
 		public virtual async Task NotifyError(ErrorViewModel errorViewModel)
 		{
 			await EnsurePresented();
+			errorViewModel.CloseCommand = closeCommand;
 			errorPage.BindingContext = errorViewModel;
 			previewPage.ChangePage(errorPage);
 		}
