@@ -126,6 +126,7 @@ namespace XAMLator
 			byte[] bytes = new byte[1024];
 			int bytesRead = 0;
 
+			Log.Debug("Start receiving updates from ide");
 			Task.Run(async () =>
 			{
 				// Loop to receive all the data sent by the client.
@@ -153,7 +154,7 @@ namespace XAMLator
 					}
 					else if (t != msg.Length - 1)
 					{
-						pendingmsg = msg.Substring(t + 1, msg.Length);
+						pendingmsg = msg.Substring(t + 1, msg.Length - t - 1);
 						msg = msg.Substring(0, t);
 					}
 					if (msg != null)
@@ -171,6 +172,8 @@ namespace XAMLator
 					//Receive more bytes
 					bytesRead = await client.GetStream().ReadAsync(bytes, 0, bytes.Length, cancellationToken);
 				}
+
+				Log.Debug("Receive stopped, disconnected");
 			}, cancellationToken);
 		}
 	}
