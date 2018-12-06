@@ -10,9 +10,26 @@ namespace XAMLator.Server
 	/// Evaluates expressions using Roslyn's C# Scripint API.
 	public class Evaluator : IEvaluator
 	{
+		static bool isEvaluationSupported;
+
 		ScriptOptions options;
 
-		public async Task<bool> EvaluateExpression(string evalExpression, string code, EvalResult result)
+		static Evaluator()
+		{
+			try
+			{
+				CSharpScript.RunAsync("2+2").Wait();
+				isEvaluationSupported = true;
+			}
+			catch (Exception ex)
+			{
+				isEvaluationSupported = false;
+			}
+		}
+
+		public bool IsEvaluationSupported => isEvaluationSupported;
+
+		public async Task<bool> EvaluateCode(string code, EvalResult result)
 		{
 			EnsureConfigured();
 			try

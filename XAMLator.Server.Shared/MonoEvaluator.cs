@@ -8,10 +8,28 @@ namespace XAMLator.Server
 {
 	public class Evaluator : IEvaluator
 	{
+		static readonly bool isEvaluationSupported;
+
 		Mono.CSharp.Evaluator eval;
 		Printer printer;
 
-		public Task<bool> EvaluateExpression(string expression, string code, EvalResult result)
+		static Evaluator()
+		{
+			var eval = new Mono.CSharp.Evaluator(new CompilerContext(new CompilerSettings(), new Printer()));
+			try
+			{
+				eval.Evaluate("2+2");
+				isEvaluationSupported = true;
+			}
+			catch (Exception ex)
+			{
+				isEvaluationSupported = false;
+			}
+		}
+
+		public bool IsEvaluationSupported => isEvaluationSupported;
+
+		public Task<bool> EvaluateCode(string code, EvalResult result)
 		{
 			EnsureConfigured();
 			try
