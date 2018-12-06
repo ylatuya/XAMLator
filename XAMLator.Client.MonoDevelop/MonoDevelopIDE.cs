@@ -36,6 +36,7 @@ namespace XAMLator.Client
 			if (boundDoc != null)
 			{
 				boundDoc.Saved -= HandleDocumentSaved;
+				boundDoc.AnalysisDocumentChanged -= HandleAnalysisDocumentChanged;
 				boundDoc = null;
 			}
 
@@ -45,23 +46,34 @@ namespace XAMLator.Client
 				boundDoc = doc;
 				Log.Information($"Monitoring document {boundDoc.FileName}");
 				boundDoc.Saved += HandleDocumentSaved;
-				EmitDocumentChanged();
+				boundDoc.AnalysisDocumentChanged += HandleAnalysisDocumentChanged;
+				HandleDocumentSaved(boundDoc, new EventArgs());
 			}
 		}
 
-		void EmitDocumentChanged(SyntaxTree syntaxTree = null, SemanticModel semanticModel = null)
+		void HandleAnalysisDocumentChanged(object sender, EventArgs e)
 		{
-			Log.Information($"XAML document changed {boundDoc.Name}");
+			// This event is sent only once when the document is parsed the first
+			// and the AnalysisDocument is available.
+			HandleDocumentSaved(boundDoc, new EventArgs());
+		}
+
+
+		async void HandleDocumentSaved(object sender, EventArgs e)
+		{
+			SyntaxTree syntaxTree = null;
+			SemanticModel semanticModel = null;
+			if (boundDoc.FileName.Extension == ".cs" && boundDoc.AnalysisDocument != null)
+			{
+				syntaxTree = await boundDoc.AnalysisDocument.GetSyntaxTreeAsync();
+				semanticModel = await boundDoc.AnalysisDocument.GetSemanticModelAsync();
+			}
+
+			Log.Information($"Document changed {boundDoc.Name}");
 			DocumentChanged?.Invoke(this, new DocumentChangedEventArgs(boundDoc.FileName,
 																	   boundDoc.Editor.Text,
 																	   syntaxTree,
 																	   semanticModel));
-		}
-
-		async void HandleDocumentSaved(object sender, EventArgs e)
-		{
-			EmitDocumentChanged(await boundDoc.AnalysisDocument.GetSyntaxTreeAsync(),
-					 await boundDoc.AnalysisDocument.GetSemanticModelAsync());
 		}
 
 		public Task RunTarget(string taskName)
