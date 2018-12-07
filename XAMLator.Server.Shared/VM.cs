@@ -66,27 +66,36 @@ namespace XAMLator.Server
 
 			var sw = new System.Diagnostics.Stopwatch();
 
-			Log.Debug($"Evaluation request {code}");
+			Log.Debug($"Evaluating code");
 
 			sw.Start();
 
 			currentEvalRequest = code;
-			await evaluator.EvaluateExpression(code.NewTypeExpression,
-											   code.NeedsRebuild ? code.Declarations : null,
-											   evalResult);
+			object newType;
 
-			if (evalResult.Result != null)
+			if (evaluator.IsEvaluationSupported)
 			{
-				LoadXAML(evalResult.Result, code.Xaml, evalResult);
+				if (code.NeedsRebuild)
+				{
+					await evaluator.EvaluateCode(code.Declarations, evalResult);
+				}
+				if (!evalResult.HasErrors)
+				{
+					evalResult.ResultType = GetTypeByName(code.NewTypeName);
+				}
 			}
+			else
+			{
+				evalResult.ResultType = GetTypeByName(code.OriginalTypeName);
+			}
+
 			sw.Stop();
 
-			Log.Debug($"Evaluation ended with result  {evalResult.Result}");
+			Log.Debug($"Evaluation ended with result");
 
 			evalResult.Duration = sw.Elapsed;
 			return evalResult;
 		}
-
 
 		bool LoadXAML(object view, string xaml, EvalResult result)
 		{
@@ -133,6 +142,34 @@ namespace XAMLator.Server
 			if (name.EndsWith(".css"))
 			{
 				return currentEvalRequest.StyleSheets[name];
+			}
+			return null;
+		}
+
+		/// <summary>
+		/// Gets a all Type instances matching the specified class name.
+		/// </summary>
+		/// <param name="className">Name of the class sought.</param>
+		/// <returns>Types that have the class name specified. They may not be in the same namespace.</returns>
+		static Type GetTypeByName(string className)
+		{
+			foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
+			{
+				try
+				{
+					Type[] assemblyTypes = a.GetTypes();
+					for (int j = 0; j < assemblyTypes.Length; j++)
+					{
+						if (assemblyTypes[j].FullName == className)
+						{
+							return (assemblyTypes[j]);
+						}
+					}
+				}
+				catch
+				{
+					//just continue with the next assembly
+				}
 			}
 			return null;
 		}

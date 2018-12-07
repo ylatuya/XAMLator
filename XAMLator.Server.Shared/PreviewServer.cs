@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,12 +34,14 @@ namespace XAMLator.Server
 			errorViewModel = new ErrorViewModel();
 		}
 
-		public static Task<bool> Run(Dictionary<Type, object> viewModelsMapping = null, IPreviewer previewer = null)
+		public static Task<bool> Run(Dictionary<Type, object> viewModelsMapping = null,
+			IPreviewer previewer = null, string ideIP = null, int idePort = Constants.DEFAULT_PORT)
 		{
-			return Instance.RunInternal(viewModelsMapping, previewer);
+			return Instance.RunInternal(viewModelsMapping, previewer, ideIP, idePort);
 		}
 
-		internal async Task<bool> RunInternal(Dictionary<Type, object> viewModelsMapping, IPreviewer previewer)
+		internal async Task<bool> RunInternal(Dictionary<Type, object> viewModelsMapping,
+			IPreviewer previewer, string ideIP, int idePort)
 		{
 			if (isRunning)
 			{
@@ -46,7 +49,7 @@ namespace XAMLator.Server
 			}
 
 			mainScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-			await RegisterDevice();
+			await RegisterDevice(ideIP, idePort);
 			if (viewModelsMapping == null)
 			{
 				viewModelsMapping = new Dictionary<Type, object>();
@@ -56,19 +59,18 @@ namespace XAMLator.Server
 				previewer = new Previewer(viewModelsMapping);
 			}
 			this.previewer = previewer;
-			errorViewModel.CloseCommand = previewer.CloseCommand;
 			vm = new VM();
 			isRunning = true;
 			return true;
 		}
 
-		async Task RegisterDevice()
+		async Task RegisterDevice(string ideIP, int idePort)
 		{
-			var ideIP = GetIdeIPFromResource();
+			ideIP = string.IsNullOrEmpty(ideIP) ? GetIdeIPFromResource() : ideIP;
 			try
 			{
-				Log.Information($"Connecting to IDE at tcp://{ideIP}:{Constants.DEFAULT_PORT}");
-				await client.Connect(ideIP, Constants.DEFAULT_PORT);
+				Log.Information($"Connecting to IDE at tcp://{ideIP}:{idePort}");
+				await client.Connect(ideIP, idePort);
 			}
 			catch (Exception ex)
 			{
@@ -106,7 +108,7 @@ namespace XAMLator.Server
 			try
 			{
 				result = await vm.Eval(request, mainScheduler, CancellationToken.None);
-				if (result.HasResult)
+				if (result.ResultType != null)
 				{
 					var tcs = new TaskCompletionSource<bool>();
 					Xamarin.Forms.Device.BeginInvokeOnMainThread(async () =>

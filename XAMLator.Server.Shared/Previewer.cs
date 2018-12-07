@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
@@ -12,6 +11,8 @@ namespace XAMLator.Server
 	/// </summary>
 	public class Previewer : IPreviewer
 	{
+		public static Func<Type, object> TypeActivator { get; set; } = Activator.CreateInstance;
+
 		protected PreviewPage previewPage;
 		protected ErrorPage errorPage;
 		protected Dictionary<Type, object> viewModelsMapping;
@@ -35,23 +36,23 @@ namespace XAMLator.Server
 			previewPage = new PreviewPage(quitLive);
 		}
 
-		public ICommand CloseCommand => closeCommand;
-
 		/// <summary>
 		/// Preview the specified evaluation result.
 		/// </summary>
 		/// <param name="res">Res.</param>
 		public virtual async Task Preview(EvalResult res)
 		{
-			Log.Information($"Visualizing result {res.Result}");
-			Page page = res.Result as Page;
-			if (page == null && res.Result is View view)
+			Log.Information($"Visualizing result {res.ResultType}");
+
+			var result = TypeActivator(res.ResultType);
+			Page page = result as Page;
+			if (page == null && result is View view)
 			{
 				page = new ContentPage { Content = view };
 			}
 			if (page != null)
 			{
-				if (viewModelsMapping.TryGetValue(res.Result.GetType(), out object viewModel))
+				if (viewModelsMapping.TryGetValue(res.ResultType, out object viewModel))
 				{
 					page.BindingContext = viewModel;
 				}
@@ -64,6 +65,7 @@ namespace XAMLator.Server
 		public virtual async Task NotifyError(ErrorViewModel errorViewModel)
 		{
 			await EnsurePresented();
+			errorViewModel.CloseCommand = closeCommand;
 			errorPage.BindingContext = errorViewModel;
 			previewPage.ChangePage(errorPage);
 		}

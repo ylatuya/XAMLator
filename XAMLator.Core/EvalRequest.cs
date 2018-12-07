@@ -8,11 +8,12 @@ namespace XAMLator
 	public class EvalRequest
 	{
 		public string Declarations;
-		public string NewTypeExpression;
+		public string NewTypeName;
 		public string Xaml;
 		public Dictionary<string, string> StyleSheets;
 		public bool NeedsRebuild;
 		public string XamlResourceName;
+		public string OriginalTypeName;
 	}
 
 	public class EvalMessage : INotifyPropertyChanged
@@ -37,14 +38,17 @@ namespace XAMLator
 	{
 		public EvalMessage[] Messages;
 		public TimeSpan Duration;
-		public object Result;
+		public Type ResultType;
+		public Type OriginalType;
 		public bool HasResult => Result != null;
+		public object Result;
 		public string Xaml;
 
 		public bool HasErrors
 		{
 			get { return Messages != null && Messages.Any(m => m.MessageType == "error"); }
 		}
+
 	}
 
 	public class EvalResponse
