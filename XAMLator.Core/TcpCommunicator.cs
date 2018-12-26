@@ -8,22 +8,18 @@ using System.Threading.Tasks;
 
 namespace XAMLator
 {
-	public class TcpCommunicatorServer : TcpCommunicator
+	public class TcpCommunicatorServer : TcpCommunicator, ITcpCommunicatorServer
 	{
 		int serverPort;
 		TcpListener listener;
 
 		public event EventHandler ClientConnected;
 
-		public TcpCommunicatorServer(int serverPort)
-		{
-			this.serverPort = serverPort;
-		}
-
 		public int ClientsCount => clients.Count;
 
-		public Task<bool> StartListening()
+		public Task<bool> StartListening(int serverPort)
 		{
+			this.serverPort = serverPort;
 			var taskCompletion = new TaskCompletionSource<bool>();
 			Task.Factory.StartNew(() => Run(taskCompletion), TaskCreationOptions.LongRunning);
 			return taskCompletion.Task;
@@ -68,7 +64,7 @@ namespace XAMLator
 		}
 	}
 
-	public class TcpCommunicatorClient : TcpCommunicator
+	public class TcpCommunicatorClient : TcpCommunicator, ITcpCommunicatorClient
 	{
 		TcpClient client;
 
@@ -89,7 +85,7 @@ namespace XAMLator
 		}
 	}
 
-	public abstract class TcpCommunicator
+	public abstract class TcpCommunicator : ITcpCommunicator
 	{
 		string pendingmsg;
 		protected ConcurrentDictionary<Guid, Tuple<TcpClient, CancellationTokenSource>> clients = new ConcurrentDictionary<Guid, Tuple<TcpClient, CancellationTokenSource>>();

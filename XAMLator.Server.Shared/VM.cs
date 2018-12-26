@@ -13,7 +13,7 @@ namespace XAMLator.Server
 	public class VM
 	{
 		static MethodInfo loadXAML;
-		static EvalRequest currentEvalRequest;
+		static EvalRequestMessage currentEvalRequest;
 		readonly object mutex = new object();
 		IEvaluator evaluator;
 
@@ -38,7 +38,7 @@ namespace XAMLator.Server
 			loadXAML.Invoke(null, new object[] { view, currentEvalRequest.Xaml });
 		}
 
-		public Task<EvalResult> Eval(EvalRequest code, TaskScheduler mainScheduler, CancellationToken token)
+		public Task<EvalResult> Eval(EvalRequestMessage code, TaskScheduler mainScheduler, CancellationToken token)
 		{
 			var tcs = new TaskCompletionSource<EvalResult>();
 			var r = new EvalResult();
@@ -60,7 +60,7 @@ namespace XAMLator.Server
 			}
 		}
 
-		async Task<EvalResult> EvalOnMainThread(EvalRequest code, CancellationToken token)
+		async Task<EvalResult> EvalOnMainThread(EvalRequestMessage code, CancellationToken token)
 		{
 			EvalResult evalResult = new EvalResult();
 
@@ -71,15 +71,17 @@ namespace XAMLator.Server
 			sw.Start();
 
 			currentEvalRequest = code;
-			object newType;
-
 			if (evaluator.IsEvaluationSupported)
 			{
 				if (code.NeedsRebuild)
 				{
-					await evaluator.EvaluateCode(code.Declarations, evalResult);
+					await evaluator.EvaluateCode($"new {code.NewTypeName} ()", evalResult, code.Declarations);
+					if (!evalResult.HasErrors && evalResult.HasResult)
+					{
+						evalResult.ResultType = evalResult.Result.GetType();
+					}
 				}
-				if (!evalResult.HasErrors)
+				else
 				{
 					evalResult.ResultType = GetTypeByName(code.NewTypeName);
 				}
@@ -135,6 +137,10 @@ namespace XAMLator.Server
 		static string LoadResource(AssemblyName assemblyName, string name)
 		{
 			Log.Information($"Resolving resource {name}");
+			if (currentEvalRequest == null)
+			{
+				return null;
+			}
 			if (name == currentEvalRequest.XamlResourceName)
 			{
 				return currentEvalRequest.Xaml;

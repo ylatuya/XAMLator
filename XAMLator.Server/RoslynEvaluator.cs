@@ -28,7 +28,7 @@ namespace XAMLator.Server
 
 		public bool IsEvaluationSupported => isEvaluationSupported;
 
-		public async Task<bool> EvaluateCode(string code, EvalResult result)
+		public async Task<bool> EvaluateCode(string code, EvalResult result, string initCode = null)
 		{
 			if (string.IsNullOrEmpty(code))
 			{
@@ -38,7 +38,17 @@ namespace XAMLator.Server
 			EnsureConfigured();
 			try
 			{
-				var state = await CSharpScript.RunAsync(code);
+				ScriptState state;
+				if (initCode != null)
+				{
+					state = await CSharpScript.RunAsync(initCode);
+					await state.ContinueWithAsync(code);
+				}
+				else
+				{
+					state = await CSharpScript.RunAsync(code);
+				}
+				result.Result = state.ReturnValue;
 			}
 			catch (CompilationErrorException ex)
 			{

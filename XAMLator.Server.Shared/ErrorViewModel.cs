@@ -44,10 +44,15 @@ namespace XAMLator.Server
 			}
 		}
 
+		public void SetError(string title, string ex)
+		{
+			Error = ex;
+			Title = title;
+		}
+
 		public void SetError(string title, Exception ex)
 		{
-			Error = ex.ToString();
-			Title = title;
+			SetError(title, ex.ToString());
 		}
 
 		public void SetError(string title, EvalResult result)

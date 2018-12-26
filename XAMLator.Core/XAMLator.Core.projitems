@@ -17,5 +17,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)ExtensionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NetworkUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TcpCommunicator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITcpCommunicatorServer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITcpCommunicator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ITcpCommunicatorClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IUIToolkit.cs" />
   </ItemGroup>
 </Project>

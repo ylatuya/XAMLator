@@ -27,33 +27,25 @@ namespace XAMLator
 
 		public static XAMLDocument Parse(string filePath, string xaml)
 		{
-			try
+			using (var stream = new StringReader(xaml))
 			{
-				using (var stream = new StringReader(xaml))
-				{
-					var reader = XmlReader.Create(stream);
-					var xdoc = XDocument.Load(reader);
-					XNamespace x = "http://schemas.microsoft.com/winfx/2009/xaml";
-					XNamespace xm = "http://xamarin.com/schemas/2014/forms";
-					var classAttribute = xdoc.Root.Attribute(x + "Class");
-					CleanAutomationIds(xdoc.Root);
-					var styleSheetElements = xdoc.Root
-												 .Descendants()
-												 .Where(e => e.Name.ToString().EndsWith("StyleSheet"));
-					CleanStyleSheets(styleSheetElements);
-					var styleSheets = styleSheetElements
-						.Select(e => e.Attribute("Source"))
-						.Where(e => e != null)
-						.Select(e => e.Value)
-						.ToList();
-					xaml = xdoc.ToString();
-					return new XAMLDocument(filePath, xaml, classAttribute.Value, styleSheets);
-				}
-			}
-			catch (Exception ex)
-			{
-				Log.Exception(ex);
-				return null;
+				var reader = XmlReader.Create(stream);
+				var xdoc = XDocument.Load(reader);
+				XNamespace x = "http://schemas.microsoft.com/winfx/2009/xaml";
+				XNamespace xm = "http://xamarin.com/schemas/2014/forms";
+				var classAttribute = xdoc.Root.Attribute(x + "Class");
+				CleanAutomationIds(xdoc.Root);
+				var styleSheetElements = xdoc.Root
+											 .Descendants()
+											 .Where(e => e.Name.ToString().EndsWith("StyleSheet"));
+				CleanStyleSheets(styleSheetElements);
+				var styleSheets = styleSheetElements
+					.Select(e => e.Attribute("Source"))
+					.Where(e => e != null)
+					.Select(e => e.Value)
+					.ToList();
+				xaml = xdoc.ToString();
+				return new XAMLDocument(filePath, xaml, classAttribute.Value, styleSheets);
 			}
 		}
 

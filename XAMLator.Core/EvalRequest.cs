@@ -5,7 +5,25 @@ using System.ComponentModel;
 
 namespace XAMLator
 {
-	public class EvalRequest
+	public class Message
+	{
+		public string Type => GetType().Name;
+	}
+
+	public class ErrorMessage : Message
+	{
+		public ErrorMessage(string title, string exception)
+		{
+			Title = title;
+			Exception = exception;
+		}
+
+		public string Title { get; }
+
+		public string Exception { get; }
+	}
+
+	public class EvalRequestMessage : Message
 	{
 		public string Declarations;
 		public string NewTypeName;

@@ -10,7 +10,7 @@ namespace XAMLator.Server
 		/// <returns>True if succeeded.</returns>
 		/// <param name="code">The class code.</param>
 		/// <param name="result">Eval result.</param>
-		Task<bool> EvaluateCode(string code, EvalResult result);
+		Task<bool> EvaluateCode(string code, EvalResult result, string extraCode = null);
 
 		/// <summary>
 		/// Check if evaluation is supported. This can fail in iOS real devices
