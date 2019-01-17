@@ -47,7 +47,10 @@ namespace XAMLator.Client
 				Log.Information($"Monitoring document {boundDoc.FileName}");
 				boundDoc.Saved += HandleDocumentSaved;
 				boundDoc.AnalysisDocumentChanged += HandleAnalysisDocumentChanged;
-				HandleDocumentSaved(boundDoc, new EventArgs());
+				if (ext == ".xaml")
+				{
+					HandleDocumentSaved(boundDoc, new EventArgs());
+				}
 			}
 		}
 
