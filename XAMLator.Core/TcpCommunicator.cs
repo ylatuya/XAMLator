@@ -119,58 +119,63 @@ namespace XAMLator
 
 		protected void Receive(TcpClient client, CancellationToken cancellationToken)
 		{
-			byte[] bytes = new byte[1024];
-			int bytesRead = 0;
-
 			Log.Debug("Start receiving updates from ide");
 			Task.Run(async () =>
 			{
-				// Loop to receive all the data sent by the client.
-				bytesRead = await client.GetStream().ReadAsync(bytes, 0, bytes.Length, cancellationToken);
+				await ReceiveLoop(client, cancellationToken);
+			}, cancellationToken);
+		}
 
-				while (bytesRead != 0)
+		async Task ReceiveLoop(TcpClient client, CancellationToken cancellationToken)
+		{
+			byte[] bytes = new byte[1024];
+			int bytesRead = 0;
+
+			// Loop to receive all the data sent by the client.
+			bytesRead = await client.GetStream().ReadAsync(bytes, 0, bytes.Length, cancellationToken);
+
+			while (bytesRead != 0)
+			{
+				cancellationToken.ThrowIfCancellationRequested();
+
+				// Translate data bytes to a UTF8 string.
+				string msg;
+				msg = Encoding.UTF8.GetString(bytes, 0, bytesRead);
+
+				// Process the data sent by the client.
+				if (pendingmsg != null)
 				{
-					cancellationToken.ThrowIfCancellationRequested();
-
-					// Translate data bytes to a UTF8 string.
-					string msg;
-					msg = Encoding.UTF8.GetString(bytes, 0, bytesRead);
-
-					// Process the data sent by the client.
-					if (pendingmsg != null)
+					msg = pendingmsg + msg;
+					pendingmsg = null;
+				}
+				int t = msg.LastIndexOf('\0');
+				if (t == -1)
+				{
+					pendingmsg = msg;
+					msg = null;
+				}
+				else if (t != msg.Length - 1)
+				{
+					pendingmsg = msg.Substring(t + 1, msg.Length - t - 1);
+					msg = msg.Substring(0, t);
+				}
+				if (msg != null)
+				{
+					var msgs = msg.Split('\0');
+					foreach (var ms in msgs)
 					{
-						msg = pendingmsg + msg;
-						pendingmsg = null;
-					}
-					int t = msg.LastIndexOf('\0');
-					if (t == -1)
-					{
-						pendingmsg = msg;
-						msg = null;
-					}
-					else if (t != msg.Length - 1)
-					{
-						pendingmsg = msg.Substring(t + 1, msg.Length - t - 1);
-						msg = msg.Substring(0, t);
-					}
-					if (msg != null)
-					{
-						var msgs = msg.Split('\0');
-						foreach (var ms in msgs)
+						if (!string.IsNullOrWhiteSpace(ms))
 						{
-							if (!string.IsNullOrWhiteSpace(ms))
-							{
-								Log.Debug(String.Format("Received: {0}", msg));
-								DataReceived?.Invoke(this, Serializer.DeserializeJson(ms));
-							}
+							Log.Debug(String.Format("Received: {0}", msg));
+							DataReceived?.Invoke(this, Serializer.DeserializeJson(ms));
 						}
 					}
-					//Receive more bytes
-					bytesRead = await client.GetStream().ReadAsync(bytes, 0, bytes.Length, cancellationToken);
 				}
+				//Receive more bytes
+				bytesRead = await client.GetStream().ReadAsync(bytes, 0, bytes.Length, cancellationToken);
+			}
 
-				Log.Debug("Receive stopped, disconnected");
-			}, cancellationToken);
+			Log.Debug("Receive stopped, disconnected");
 		}
 	}
 }
