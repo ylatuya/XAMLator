@@ -44,6 +44,17 @@ steps:
   displayName: 'Test XAMLator.Build.Tasks.Tests'
   workingDirectory: XAMLator.Build.Tasks.Tests/bin/Release
 
+- script: msbuild /p:Configuration=Release XAMLator.Server.Tests/XAMLator.Server.Tests.csproj
+  displayName: 'Build XAMLator.Server.Tests'
+
+- script: mono ../../../packages/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe XAMLator.Server.Tests.dll
+  displayName: 'Test XAMLator.Server.Tests'
+  workingDirectory: XAMLator.Server.Tests/bin/Release
+
+- script: mono ../../../packages/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe XAMLator.Build.Tasks.Tests.dll
+  displayName: 'Test XAMLator.Build.Tasks.Tests'
+  workingDirectory: XAMLator.Build.Tasks.Tests/bin/Release
+
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
