@@ -14,11 +14,13 @@ namespace XAMLator.Build.Tasks.Tests
 		public void The_xamlator_assembly_is_weaved_with_the_current_ip()
 		{
 			var task = new AssemblyWeaver();
-			task.Path = BuildConstants.XAMLATOR_ASSEMBLY;
+			var assemblyPath = Path.Combine(TestContext.CurrentContext.TestDirectory,
+				BuildConstants.XAMLATOR_ASSEMBLY);
+			task.Path = assemblyPath;
 			task.BuildEngine = Mock.Of<IBuildEngine>();
 			task.Execute();
 
-			var assembly = Assembly.LoadFrom(BuildConstants.XAMLATOR_ASSEMBLY);
+			var assembly = Assembly.LoadFrom(assemblyPath);
 			using (Stream stream = assembly.GetManifestResourceStream(BuildConstants.IDE_IP_RESOURCE_NAME))
 			using (StreamReader reader = new StreamReader(stream))
 			{

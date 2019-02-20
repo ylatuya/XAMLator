@@ -44,6 +44,34 @@ namespace XAMLator.Server
 		{
 			Log.Information($"Visualizing result {res.ResultType}");
 
+			Page page = CreateViewFromResult(res);
+			if (page != null)
+			{
+				await PreviewPage(page);
+			}
+		}
+
+		public virtual async Task NotifyError(ErrorViewModel errorViewModel)
+		{
+			await EnsurePresented();
+			errorViewModel.CloseCommand = closeCommand;
+			errorPage.BindingContext = errorViewModel;
+			previewPage.ChangePage(errorPage);
+		}
+
+		protected virtual async Task PreviewPage(Page page)
+		{
+			await EnsurePresented();
+			NavigationPage.SetHasNavigationBar(previewPage, true);
+			previewPage.ChangePage(page);
+		}
+
+		protected virtual Page CreateViewFromResult(EvalResult res)
+		{
+			if (res.HasResult)
+			{
+				return res.Result as Page;
+			}
 			var result = TypeActivator(res.ResultType);
 			Page page = result as Page;
 			if (page == null && result is View view)
@@ -56,18 +84,8 @@ namespace XAMLator.Server
 				{
 					page.BindingContext = viewModel;
 				}
-				await EnsurePresented();
-				NavigationPage.SetHasNavigationBar(previewPage, true);
-				previewPage.ChangePage(page);
 			}
-		}
-
-		public virtual async Task NotifyError(ErrorViewModel errorViewModel)
-		{
-			await EnsurePresented();
-			errorViewModel.CloseCommand = closeCommand;
-			errorPage.BindingContext = errorViewModel;
-			previewPage.ChangePage(errorPage);
+			return page;
 		}
 
 		protected virtual Task ShowPreviewPage(Page previewPage)

@@ -30,7 +30,7 @@ namespace XAMLator.Server
 
 		public bool IsEvaluationSupported => isEvaluationSupported;
 
-		public Task<bool> EvaluateCode(string code, EvalResult result)
+		public Task<bool> EvaluateCode(string code, EvalResult result, string initCode = null)
 		{
 			if (string.IsNullOrEmpty(code))
 			{
@@ -42,8 +42,11 @@ namespace XAMLator.Server
 			try
 			{
 				printer.Reset();
-				eval.Evaluate(code, out object retResult, out bool result_set);
-				result.Result = retResult;
+				if (initCode != null)
+				{
+					eval.Evaluate(initCode, out object retResult, out bool result_set);
+				}
+				result.Result = eval.Evaluate(code);
 				return Task.FromResult(true);
 			}
 			catch (Exception ex)
