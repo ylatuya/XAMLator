@@ -40,7 +40,11 @@ namespace XAMLator.Server.Tests
 
 		string TestProjectDir => Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..");
 
+#if DEBUG
 		string TestAutogenDir => Path.Combine(TestProjectDir, "obj", "Debug");
+#else
+		string TestAutogenDir => Path.Combine(TestProjectDir, "obj", "Release");
+#endif
 
 		public Document FindDocument(string docName)
 		{
