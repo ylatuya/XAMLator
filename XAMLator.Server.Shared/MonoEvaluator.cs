@@ -24,6 +24,7 @@ namespace XAMLator.Server
 			}
 			catch (Exception ex)
 			{
+				Log.Error("Runtime evaluation not supported, did you set the mtouch option --enable-repl?");
 				isEvaluationSupported = false;
 			}
 		}
