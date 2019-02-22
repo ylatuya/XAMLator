@@ -166,8 +166,14 @@ namespace XAMLator
 					{
 						if (!string.IsNullOrWhiteSpace(ms))
 						{
-							Log.Debug(String.Format("Received: {0}", msg));
-							DataReceived?.Invoke(this, Serializer.DeserializeJson(ms));
+							try
+							{
+								DataReceived?.Invoke(this, Serializer.DeserializeJson(ms));
+							}
+							catch (Exception ex)
+							{
+								Log.Exception(ex);
+							}
 						}
 					}
 				}
