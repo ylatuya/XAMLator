@@ -44,34 +44,44 @@ namespace XAMLator.Client
 			{
 				return;
 			}
+			FormsViewClassDeclaration classDecl = null;
 
 			try
 			{
-				var classDecl = await DocumentParser.ParseDocument(e.Filename, e.Text, e.SyntaxTree, e.SemanticModel);
-
-				if (classDecl == null)
-				{
-					return;
-				}
-
-				EvalRequestMessage request = new EvalRequestMessage
-				{
-					Declarations = classDecl.Code,
-					NeedsRebuild = classDecl.NeedsRebuild,
-					OriginalTypeName = classDecl.FullNamespace,
-					NewTypeName = classDecl.CurrentFullNamespace,
-					Xaml = classDecl.Xaml,
-					XamlResourceName = classDecl.XamlResourceId,
-					StyleSheets = classDecl.StyleSheets
-				};
-				await server.Send(request);
+				classDecl = await DocumentParser.ParseDocument(e.Filename, e.Text, e.SyntaxTree, e.SemanticModel);
 			}
 			catch (Exception ex)
 			{
 				Log.Exception(ex);
 				await server.Send(new ErrorMessage($"Error parsing {e.Filename}",
 					ex.ToString()));
+				return;
 			}
+
+			if (classDecl == null)
+			{
+				return;
+			}
+
+			EvalRequestMessage request = new EvalRequestMessage
+			{
+				Declarations = classDecl.Code,
+				NeedsRebuild = classDecl.NeedsRebuild,
+				OriginalTypeName = classDecl.FullNamespace,
+				NewTypeName = classDecl.CurrentFullNamespace,
+				Xaml = classDecl.Xaml,
+				XamlResourceName = classDecl.XamlResourceId,
+				StyleSheets = classDecl.StyleSheets
+			};
+			try
+			{
+				await server.Send(request);
+			}
+			catch (Exception ex)
+			{
+				Log.Exception(ex);
+			}
+
 		}
 	}
 }
