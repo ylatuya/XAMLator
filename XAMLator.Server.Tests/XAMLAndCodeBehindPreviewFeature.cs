@@ -52,5 +52,28 @@ namespace XAMLator.Server.Tests
 			Assert.AreEqual(PreviewState.Error, previewer.State);
 			Assert.AreEqual("Oh no! An exception!", previewer.ErrorViewModel.Title);
 		}
+
+
+		[Test]
+		public async Task When_the_code_has_aliases_it_is_evaluated_correctly_when_sent_again()
+		{
+			await When_the_code_changes("TestPage.xaml.cs", @"
+			    using Xamarin.Forms;
+			    using XF = Xamarin.Forms;
+                namespace XAMLator.Server.Tests{
+                    public partial class TestPage : ContentPage {
+	              	    public TestPage() {
+			                InitializeComponent();
+	                    }}}");
+			await When_the_code_changes("TestPage.xaml.cs", @"
+			    using Xamarin.Forms;
+			    using XF = Xamarin.Forms;
+                namespace XAMLator.Server.Tests{
+                    public partial class TestPage : ContentPage {
+	              	    public TestPage() {
+			                InitializeComponent();
+	                    }}}");
+			Assert.AreEqual(PreviewState.Preview, previewer.State);
+		}
 	}
 }

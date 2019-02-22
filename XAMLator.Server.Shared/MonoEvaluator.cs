@@ -38,7 +38,11 @@ namespace XAMLator.Server
 			}
 
 			EnsureConfigured();
+			return Evaluate(code, result, initCode, true);
+		}
 
+		async Task<bool> Evaluate(string code, EvalResult result, string initCode, bool retryOnError)
+		{
 			try
 			{
 				printer.Reset();
@@ -47,10 +51,17 @@ namespace XAMLator.Server
 					eval.Evaluate(initCode, out object retResult, out bool result_set);
 				}
 				result.Result = eval.Evaluate(code);
-				return Task.FromResult(true);
+				return true;
 			}
 			catch (Exception ex)
 			{
+				if (retryOnError)
+				{
+					eval = null;
+					EnsureConfigured();
+					return await Evaluate(code, result, initCode, false);
+				}
+
 				Log.Error($"Error evalutaing code");
 				eval = null;
 				if (printer.Messages.Count != 0)
@@ -61,7 +72,7 @@ namespace XAMLator.Server
 				{
 					result.Messages = new[] { new EvalMessage("error", ex.ToString()) };
 				}
-				return Task.FromResult(false);
+				return false;
 			}
 		}
 
