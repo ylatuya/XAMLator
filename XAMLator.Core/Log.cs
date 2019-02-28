@@ -48,6 +48,8 @@ namespace XAMLator
 
 		public static bool Debugging { get; set; }
 
+		public static Action<string> WriteFunc { get; set; } = DefaultWriteFunc;
+
 		public static void Debug(string message)
 		{
 			if (Debugging)
@@ -133,7 +135,12 @@ namespace XAMLator
 
 		static void Write(string format, params object[] args)
 		{
-			System.Diagnostics.Debug.Write(String.Format(format, args));
+			WriteFunc(string.Format(format, args));
+		}
+
+		static void DefaultWriteFunc(string msg)
+		{
+			Console.Write(msg);
 		}
 
 		static string TypeString(LogEntryType type)
