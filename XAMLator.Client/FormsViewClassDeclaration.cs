@@ -98,8 +98,7 @@ namespace XAMLator.Client
 			this.codeBehindFilePath = codeBehindFilePath;
 			this.xamlFilePath = xaml.FilePath;
 			StyleSheets = new Dictionary<string, string>();
-			FillClassInfo(classDeclarationSyntax, model);
-			UpdateCode(classDeclarationSyntax);
+			UpdateCode(classDeclarationSyntax, model);
 			classesCache.Add(this);
 		}
 
@@ -279,10 +278,9 @@ namespace XAMLator.Client
 		/// Updates the code behind of the class declaration.
 		/// </summary>
 		/// <param name="classDeclarationSyntax">Class declaration syntax.</param>
-		internal void UpdateCode(ClassDeclarationSyntax classDeclarationSyntax)
+		internal void UpdateCode(ClassDeclarationSyntax classDeclarationSyntax, SemanticModel model)
 		{
-			this.classDeclarationSyntax = classDeclarationSyntax;
-			FillSources();
+			FillClassInfo(classDeclarationSyntax, model);
 			FillUsings();
 			FillPartials();
 			FillAutoGenCodeBehind();

@@ -85,7 +85,6 @@ namespace XAMLator
 					builder.AppendLine();
 				}
 			}
-
 			Log.Warning($"Caught an exception {builder.ToString()}");
 		}
 
@@ -123,14 +122,11 @@ namespace XAMLator
 
 			lock (writeLock)
 			{
-				Write("[{5}{0} {1:00}:{2:00}:{3:00}.{4:000}]", TypeString(type), DateTime.Now.Hour,
+				Write("[{5} {0} {1:00}:{2:00}:{3:00}.{4:000}]", TypeString(type), DateTime.Now.Hour,
 					DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond, thread_name);
-
 				ConsoleCrayon.ResetColor();
-
 				Write($" {message}\n");
 			}
-
 		}
 
 		static void Write(string format, params object[] args)
