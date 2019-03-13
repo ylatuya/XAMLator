@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json.Linq;
 
 namespace XAMLator.Client
 {
@@ -22,6 +23,7 @@ namespace XAMLator.Client
 				server = new TcpCommunicatorServer();
 			}
 			this.server = server;
+			server.DataReceived += HandleDataReceived;
 			ide.DocumentChanged += HandleDocumentChanged;
 		}
 
@@ -81,7 +83,17 @@ namespace XAMLator.Client
 			{
 				Log.Exception(ex);
 			}
+		}
 
+		void HandleDataReceived(object sender, object e)
+		{
+			var container = e as JContainer;
+			string type = (string)container["Type"];
+
+			if (type == typeof(ResetMessage).Name)
+			{
+				FormsViewClassDeclaration.Reset();
+			}
 		}
 	}
 }

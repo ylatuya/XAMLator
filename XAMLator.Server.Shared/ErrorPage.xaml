@@ -39,6 +39,11 @@
                 HorizontalOptions="FillAndExpand"
                 TextColor="Black"
                 Text="{Binding Error}"/>
+              <Button
+                Text = "Reset IDE"
+                FontSize = "20"
+                Command="{Binding ResetCommand}"
+                />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

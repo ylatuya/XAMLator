@@ -48,6 +48,7 @@ namespace XAMLator.Server.Tests
 
 		protected override Task HidePreviewPage(Page previewPage)
 		{
+			State = PreviewState.None;
 			return Task.FromResult(true);
 		}
 
