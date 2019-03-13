@@ -69,7 +69,7 @@ namespace XAMLator.Client
 				{
 					xamlClass.FillClassInfo(classDeclaration, semanticModel);
 				}
-				xamlClass.UpdateCode(classDeclaration);
+				xamlClass.UpdateCode(classDeclaration, semanticModel);
 			}
 			return xamlClass;
 		}

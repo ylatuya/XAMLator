@@ -75,5 +75,27 @@ namespace XAMLator.Server.Tests
 	                    }}}");
 			Assert.AreEqual(PreviewState.Preview, previewer.State);
 		}
+
+		[Test]
+		public async Task When_a_new_using_is_added_the_code_is_evaluated_correctly()
+		{
+			await When_the_code_changes("TestPage.xaml.cs", @"
+			    using Xamarin.Forms;
+                namespace XAMLator.Server.Tests{
+                    public partial class TestPage : ContentPage {
+	              	    public TestPage() {
+			                InitializeComponent();
+	                    }}}");
+			await When_the_code_changes("TestPage.xaml.cs", @"
+			    using Xamarin.Forms;
+			    using System;
+                namespace XAMLator.Server.Tests{
+                    public partial class TestPage : ContentPage {
+	              	    public TestPage() {
+			                InitializeComponent();
+                            Console.WriteLine();
+	                    }}}");
+			Assert.AreEqual(PreviewState.Preview, previewer.State);
+		}
 	}
 }
