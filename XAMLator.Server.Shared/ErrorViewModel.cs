@@ -11,6 +11,7 @@ namespace XAMLator.Server
 		private string _title;
 		private string _error;
 		private ICommand _closeCommand;
+		private ICommand _resetCommand;
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -41,6 +42,16 @@ namespace XAMLator.Server
 			{
 				_closeCommand = value;
 				EmitPropertyChanged(nameof(CloseCommand));
+			}
+		}
+
+		public ICommand ResetCommand
+		{
+			get => _resetCommand;
+			set
+			{
+				_resetCommand = value;
+				EmitPropertyChanged(nameof(ResetCommand));
 			}
 		}
 

@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using Xamarin.Forms;
 
 namespace XAMLator.Server
 {
@@ -28,6 +29,11 @@ namespace XAMLator.Server
 		internal PreviewServer()
 		{
 			errorViewModel = new ErrorViewModel();
+			errorViewModel.ResetCommand = new Command(() =>
+			{
+				ResetIDE();
+				errorViewModel.CloseCommand.Execute(null);
+			});
 		}
 
 		public static Task<bool> Run(Dictionary<Type, object> viewModelsMapping = null,
@@ -83,6 +89,11 @@ namespace XAMLator.Server
 				Log.Error($"Couldn't register device at {ideIP}");
 				Log.Exception(ex);
 			}
+		}
+
+		void ResetIDE()
+		{
+			client.Send(new ResetMessage());
 		}
 
 		string GetIdeIPFromResource()

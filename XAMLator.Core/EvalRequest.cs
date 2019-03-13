@@ -10,6 +10,11 @@ namespace XAMLator
 		public string Type => GetType().Name;
 	}
 
+	public class ResetMessage : Message
+	{
+
+	}
+
 	public class ErrorMessage : Message
 	{
 		public ErrorMessage(string title, string exception)

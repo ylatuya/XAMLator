@@ -16,7 +16,8 @@ namespace XAMLator.Server.Tests
 		protected TestPreviewer previewer;
 		protected TestWorkspace workspace;
 		protected Mock<IIDE> ideMock;
-		protected TestTCPCommunicator tcpCommunicator;
+		protected TestTCPCommunicatorServer tcpCommunicatorServer;
+		protected TestTCPCommunicatorClient tcpCommunicatorClient;
 		protected TestUIToolkit uiToolkit;
 		protected XAMLatorMonitor xamlatorMonitor;
 		protected PreviewServer previewServer;
@@ -29,14 +30,17 @@ namespace XAMLator.Server.Tests
 			tempDir = GetTemporaryDirectory();
 			workspace = new TestWorkspace(tempDir);
 			ideMock = new Mock<IIDE>();
-			tcpCommunicator = new TestTCPCommunicator();
+			tcpCommunicatorServer = new TestTCPCommunicatorServer();
+			tcpCommunicatorClient = new TestTCPCommunicatorClient();
+			tcpCommunicatorClient.Server = tcpCommunicatorServer;
+			tcpCommunicatorServer.Client = tcpCommunicatorClient;
 			uiToolkit = new TestUIToolkit();
 
-			xamlatorMonitor = new XAMLatorMonitor(ideMock.Object, tcpCommunicator);
+			xamlatorMonitor = new XAMLatorMonitor(ideMock.Object, tcpCommunicatorServer);
 
 			previewer = new TestPreviewer(new Dictionary<Type, object>());
 			previewServer = new PreviewServer();
-			await previewServer.RunInternal(null, previewer, null, Constants.DEFAULT_PORT, uiToolkit, tcpCommunicator);
+			await previewServer.RunInternal(null, previewer, null, Constants.DEFAULT_PORT, uiToolkit, tcpCommunicatorClient);
 		}
 
 		[TearDown]
