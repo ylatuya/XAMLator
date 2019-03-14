@@ -212,6 +212,9 @@
     <Compile Include="XAMLatorFeatureBase.cs" />
     <Compile Include="UsageFeature.cs" />
     <Compile Include="CSSUpdateFeature.cs" />
+    <Compile Include="NoXAMLTestContentPage.cs" />
+    <Compile Include="NoXAMLTestContentView.cs" />
+    <Compile Include="NoXamlTestInheritanceContentView.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="TestPage.xaml">
