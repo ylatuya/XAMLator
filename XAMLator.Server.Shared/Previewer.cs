@@ -68,15 +68,18 @@ namespace XAMLator.Server
 
 		protected virtual Page CreateViewFromResult(EvalResult res)
 		{
-			if (res.HasResult)
+			Page page;
+			if (!res.HasResult)
 			{
-				return res.Result as Page;
+				res.Result = TypeActivator(res.ResultType);
 			}
-			var result = TypeActivator(res.ResultType);
-			Page page = result as Page;
-			if (page == null && result is View view)
+			if (res.Result is View view)
 			{
 				page = new ContentPage { Content = view };
+			}
+			else
+			{
+				page = res.Result as Page;
 			}
 			if (page != null)
 			{

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace XAMLator.Client
 {
@@ -23,34 +24,33 @@ namespace XAMLator.Client
 																		  SemanticModel semanticModel)
 		{
 			XAMLDocument xamlDocument = null;
-			FormsViewClassDeclaration xamlClass = null;
-			bool created;
+			FormsViewClassDeclaration formsViewClass = null;
 
 			// FIXME: Support any kind of types, not just Xamarin.Forms views
-			if (!fileName.EndsWith(".xaml") && !fileName.EndsWith(".xaml.cs"))
+			if (!fileName.EndsWith(".xaml") && !fileName.EndsWith(".xaml.cs") && !fileName.EndsWith(".cs"))
 			{
 				return null;
 			}
 
 			// Check if we have already an instance of the class declaration for that file
-			if (!FormsViewClassDeclaration.TryGetByFileName(fileName, out xamlClass))
+			if (!FormsViewClassDeclaration.TryGetByFileName(fileName, out formsViewClass))
 			{
 				if (fileName.EndsWith(".xaml"))
 				{
 					xamlDocument = XAMLDocument.Parse(fileName, text);
 					// Check if we have an instance of class by namespace
-					if (!FormsViewClassDeclaration.TryGetByFullNamespace(xamlDocument.Type, out xamlClass))
+					if (!FormsViewClassDeclaration.TryGetByFullNamespace(xamlDocument.Type, out formsViewClass))
 					{
-						xamlClass = await CreateFromXaml(xamlDocument);
+						formsViewClass = await CreateFromXaml(xamlDocument);
 					}
 				}
 				else
 				{
-					xamlClass = await CreateFromCodeBehind(fileName, syntaxTree, semanticModel);
+					formsViewClass = await CreateFromCodeBehind(fileName, syntaxTree, semanticModel);
 				}
 			}
 
-			if (xamlClass == null)
+			if (formsViewClass == null)
 			{
 				return null;
 			}
@@ -59,19 +59,19 @@ namespace XAMLator.Client
 			if (fileName.EndsWith(".xaml") && xamlDocument == null)
 			{
 				xamlDocument = XAMLDocument.Parse(fileName, text);
-				await xamlClass.UpdateXaml(xamlDocument);
+				await formsViewClass.UpdateXaml(xamlDocument);
 			}
-			// The document is code behind
-			if (fileName.EndsWith(".xaml.cs"))
+			// The document is code behind or a view without XAML
+			if (fileName.EndsWith(".cs"))
 			{
-				var classDeclaration = FormsViewClassDeclaration.FindClass(syntaxTree, xamlClass.ClassName);
-				if (xamlClass.NeedsClassInitialization)
+				var classDeclaration = FormsViewClassDeclaration.FindClass(syntaxTree, formsViewClass.ClassName);
+				if (formsViewClass.NeedsClassInitialization)
 				{
-					xamlClass.FillClassInfo(classDeclaration, semanticModel);
+					formsViewClass.FillClassInfo(classDeclaration, semanticModel);
 				}
-				xamlClass.UpdateCode(classDeclaration, semanticModel);
+				formsViewClass.UpdateCode(classDeclaration, semanticModel);
 			}
-			return xamlClass;
+			return formsViewClass;
 		}
 
 		static async Task<FormsViewClassDeclaration> CreateFromXaml(XAMLDocument xamlDocument)
@@ -92,8 +92,12 @@ namespace XAMLator.Client
 			SyntaxTree syntaxTree, SemanticModel semanticModel)
 
 		{
-			string xaml = null, xamlFilePath = null, codeBehindFilePath = null;
-			XAMLDocument xamlDocument;
+			string xaml = null;
+			string xamlFilePath = null;
+			string codeBehindFilePath = null;
+			string className = null;
+			ClassDeclarationSyntax classDeclaration;
+			XAMLDocument xamlDocument = null;
 
 			codeBehindFilePath = fileName;
 			var xamlCandidate = fileName.Substring(0, fileName.Length - 3);
@@ -104,16 +108,34 @@ namespace XAMLator.Client
 			}
 
 			// FIXME: Handle XF views without XAML
-			// Parse the XAML file 
-			xamlDocument = XAMLDocument.Parse(xamlFilePath, xaml);
+			if (xamlFilePath != null)
+			{
+				// Parse the XAML file 
+				xamlDocument = XAMLDocument.Parse(xamlFilePath, xaml);
+				className = xamlDocument.Type.Split('.').Last();
+				classDeclaration = FormsViewClassDeclaration.FindClass(syntaxTree, className);
+			}
+			else
+			{
+				try
+				{
+					classDeclaration = FormsViewClassDeclaration.FindFormsViewClass(syntaxTree, semanticModel);
+				}
+				catch (Exception ex)
+				{
+					Log.Exception(ex);
+					Log.Error("The class is not a Xamarin.Forms View or Page");
+					return null;
+				}
+			}
+			var formsClass = new FormsViewClassDeclaration(classDeclaration, semanticModel,
+														   codeBehindFilePath, xamlDocument);
 
-			var className = xamlDocument.Type.Split('.').Last();
-			var classDeclaration = FormsViewClassDeclaration.FindClass(syntaxTree, className);
-			var xamlClass = new FormsViewClassDeclaration(classDeclaration, semanticModel,
-													codeBehindFilePath, xamlDocument);
-
-			await xamlClass.UpdateXaml(xamlDocument);
-			return xamlClass;
+			if (xamlDocument != null)
+			{
+				await formsClass.UpdateXaml(xamlDocument);
+			}
+			return formsClass;
 		}
 	}
 }

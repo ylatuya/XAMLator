@@ -18,6 +18,9 @@ namespace XAMLator.Server.Tests
 			CopyFile(TestProjectDir, "TestPage.xaml", tempDir);
 			CopyFile(TestProjectDir, "TestPage.xaml.cs", tempDir);
 			CopyFile(TestAutogenDir, "TestPage.xaml.g.cs", tempDir);
+			CopyFile(TestProjectDir, "NoXAMLTestContentPage.cs", tempDir);
+			CopyFile(TestProjectDir, "NoXAMLTestContentView.cs", tempDir);
+			CopyFile(TestProjectDir, "NoXAMLTestInheritanceContentView.cs", tempDir);
 			workspace = new AdhocWorkspace();
 			var solution = SolutionInfo.Create(SolutionId.CreateNewId(), VersionStamp.Default);
 			workspace.AddSolution(solution);
@@ -29,6 +32,13 @@ namespace XAMLator.Server.Tests
 			AddDocument(testProject, tempDir, "TestPage.xaml.cs");
 			AddDocument(testProject, tempDir, "TestPage.xaml");
 			AddDocument(testProject, tempDir, "TestPage.xaml.g.cs");
+			AddDocument(testProject, tempDir, "NoXAMLTestContentPage.cs");
+			AddDocument(testProject, tempDir, "NoXAMLTestContentView.cs");
+			AddDocument(testProject, tempDir, "NoXAMLTestInheritanceContentView.cs");
+			// Define a stub type for ContentPage and ConentView so they resolve to a type and not to an ErrorType
+			// as the Xamarin.Forms types are not defined in this workspae
+			AddDocument(testProject, tempDir, "ContentPage.cs", @"namespace Xamarin.Forms { class ContentPage: Page {}}");
+			AddDocument(testProject, tempDir, "ContentPage.cs", @"namespace Xamarin.Forms { class ContentView: View {}}");
 		}
 
 		public void Dispose()
@@ -66,12 +76,22 @@ namespace XAMLator.Server.Tests
 
 		Document AddDocument(Project testProject, string dir, string fileName)
 		{
+			return AddDocument(testProject, dir, fileName, ReadFile(dir, fileName));
+		}
+
+		Document AddDocument(Project testProject, string dir, string fileName, string text)
+		{
+			return AddDocument(testProject, dir, fileName, SourceText.From(text));
+		}
+
+		Document AddDocument(Project testProject, string dir, string fileName, SourceText content)
+		{
 			DocumentInfo documentInfo = DocumentInfo.Create(
 				DocumentId.CreateNewId(testProject.Id),
 				fileName,
 				new List<string> { dir },
 				SourceCodeKind.Regular,
-				TextLoader.From(TextAndVersion.Create(ReadFile(dir, fileName), VersionStamp.Create())),
+				TextLoader.From(TextAndVersion.Create(content, VersionStamp.Create())),
 				Path.Combine(dir, fileName));
 			return workspace.AddDocument(documentInfo);
 		}

@@ -96,7 +96,10 @@ namespace XAMLator.Client
 										 string codeBehindFilePath, XAMLDocument xaml)
 		{
 			this.codeBehindFilePath = codeBehindFilePath;
-			this.xamlFilePath = xaml.FilePath;
+			if (xaml != null)
+			{
+				xamlFilePath = xaml.FilePath;
+			}
 			StyleSheets = new Dictionary<string, string>();
 			UpdateCode(classDeclarationSyntax, model);
 			classesCache.Add(this);
@@ -111,7 +114,10 @@ namespace XAMLator.Client
 		public FormsViewClassDeclaration(string codeBehindFilePath, XAMLDocument xaml)
 		{
 			this.codeBehindFilePath = codeBehindFilePath;
-			this.xamlFilePath = xaml.FilePath;
+			if (xaml != null)
+			{
+				xamlFilePath = xaml.FilePath;
+			}
 			StyleSheets = new Dictionary<string, string>();
 			Namespace = xaml.Type.Substring(0, xaml.Type.LastIndexOf('.'));
 			ClassName = xaml.Type.Split('.').Last();
@@ -478,6 +484,29 @@ namespace XAMLator.Client
 							 .DescendantNodes()
 							 .OfType<ClassDeclarationSyntax>()
 							 .Single(c => c.Identifier.Text == className);
+		}
+
+		internal static ClassDeclarationSyntax FindFormsViewClass(SyntaxTree syntaxTree, SemanticModel model)
+		{
+			return syntaxTree.GetRoot()
+							 .DescendantNodes()
+							 .OfType<ClassDeclarationSyntax>()
+							 .First(c => IsViewOrPage(model.GetDeclaredSymbol(c)));
+		}
+
+		static bool IsViewOrPage(INamedTypeSymbol type)
+		{
+			do
+			{
+				var name = type.ToString();
+				if (name == "Xamarin.Forms.Page" || name == "Xamarin.Forms.View" ||
+					name == "Xamarin.Forms.ContentPage" || name == "Xamarin.Forms.ContentView")
+				{
+					return true;
+				}
+				type = type.BaseType;
+			} while (type != null);
+			return false;
 		}
 	}
 }
