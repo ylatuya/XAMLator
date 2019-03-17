@@ -18,39 +18,38 @@ namespace XAMLator.Client
 		/// <param name="text">Text changed.</param>
 		/// <param name="syntaxTree">Syntax tree.</param>
 		/// <param name="semanticModel">Semantic model.</param>
-		public static async Task<FormsViewClassDeclaration> ParseDocument(string fileName,
-																		  string text,
-																		  SyntaxTree syntaxTree,
-																		  SemanticModel semanticModel)
+		public static async Task<ClassDeclaration> ParseDocument(string fileName,
+																 string text,
+																 SyntaxTree syntaxTree,
+																 SemanticModel semanticModel)
 		{
 			XAMLDocument xamlDocument = null;
-			FormsViewClassDeclaration formsViewClass = null;
+			ClassDeclaration classDeclaration = null;
 
-			// FIXME: Support any kind of types, not just Xamarin.Forms views
-			if (!fileName.EndsWith(".xaml") && !fileName.EndsWith(".xaml.cs") && !fileName.EndsWith(".cs"))
+			if (!fileName.EndsWith(".xaml") && !fileName.EndsWith(".cs"))
 			{
 				return null;
 			}
 
 			// Check if we have already an instance of the class declaration for that file
-			if (!FormsViewClassDeclaration.TryGetByFileName(fileName, out formsViewClass))
+			if (!ClassDeclarationsCache.TryGetByFileName(fileName, out classDeclaration))
 			{
 				if (fileName.EndsWith(".xaml"))
 				{
 					xamlDocument = XAMLDocument.Parse(fileName, text);
 					// Check if we have an instance of class by namespace
-					if (!FormsViewClassDeclaration.TryGetByFullNamespace(xamlDocument.Type, out formsViewClass))
+					if (!ClassDeclarationsCache.TryGetByFullNamespace(xamlDocument.Type, out classDeclaration))
 					{
-						formsViewClass = await CreateFromXaml(xamlDocument);
+						classDeclaration = await CreateFromXaml(xamlDocument);
 					}
 				}
 				else
 				{
-					formsViewClass = await CreateFromCodeBehind(fileName, syntaxTree, semanticModel);
+					classDeclaration = await CreateFromCodeBehind(fileName, syntaxTree, semanticModel);
 				}
 			}
 
-			if (formsViewClass == null)
+			if (classDeclaration == null)
 			{
 				return null;
 			}
@@ -59,19 +58,19 @@ namespace XAMLator.Client
 			if (fileName.EndsWith(".xaml") && xamlDocument == null)
 			{
 				xamlDocument = XAMLDocument.Parse(fileName, text);
-				await formsViewClass.UpdateXaml(xamlDocument);
+				await (classDeclaration as FormsViewClassDeclaration).UpdateXaml(xamlDocument);
 			}
 			// The document is code behind or a view without XAML
 			if (fileName.EndsWith(".cs"))
 			{
-				var classDeclaration = FormsViewClassDeclaration.FindClass(syntaxTree, formsViewClass.ClassName);
-				if (formsViewClass.NeedsClassInitialization)
+				var klass = ClassDeclaration.FindClass(syntaxTree, classDeclaration.ClassName);
+				if (classDeclaration.NeedsClassInitialization)
 				{
-					formsViewClass.FillClassInfo(classDeclaration, semanticModel);
+					classDeclaration.FillClassInfo(klass, semanticModel);
 				}
-				formsViewClass.UpdateCode(classDeclaration, semanticModel);
+				classDeclaration.UpdateCode(klass, semanticModel);
 			}
-			return formsViewClass;
+			return classDeclaration;
 		}
 
 		static async Task<FormsViewClassDeclaration> CreateFromXaml(XAMLDocument xamlDocument)

@@ -15,5 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)XAMLDocument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IIDE.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DocumentChangedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClassDeclaration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClassDeclarationsCache.cs" />
   </ItemGroup>
 </Project>

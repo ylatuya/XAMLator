@@ -22,59 +22,13 @@ namespace XAMLator.Client
 	/// This tool was used to easilly generate the Roslyn code from sources
 	/// https://roslynquoter.azurewebsites.net/
 	/// </summary>
-	public class FormsViewClassDeclaration
+	public class FormsViewClassDeclaration : ClassDeclaration
 	{
-
-		/// <summary>
-		/// The xaml classes.
-		/// </summary>
-		internal static readonly List<FormsViewClassDeclaration> classesCache = new List<FormsViewClassDeclaration>();
-
-		/// <summary>
-		/// Reset the cache.
-		/// </summary>
-		public static void Reset()
-		{
-			classesCache.Clear();
-		}
-
-		/// <summary>
-		/// Tries to find a cached class declaration with the same full namespace.
-		/// </summary>
-		/// <returns><c>true</c>, if we found matching class, <c>false</c> otherwise.</returns>
-		/// <param name="fullNamespace">Full namespace.</param>
-		/// <param name="viewClass">View class.</param>
-		internal static bool TryGetByFullNamespace(string fullNamespace, out FormsViewClassDeclaration viewClass)
-		{
-			viewClass = classesCache.SingleOrDefault(x => x.FullNamespace == fullNamespace);
-			return viewClass != null;
-		}
-
-		/// <summary>
-		/// Tries to find a cached class declaration using this file path.
-		/// </summary>
-		/// <returns><c>true</c>, if we found matching class, <c>false</c> otherwise.</returns>
-		/// <param name="filePath">File path.</param>
-		/// <param name="viewClass">View class.</param>
-		internal static bool TryGetByFileName(string filePath, out FormsViewClassDeclaration viewClass)
-		{
-			viewClass = classesCache.SingleOrDefault(x => x.xamlFilePath == filePath || x.codeBehindFilePath == filePath);
-			return viewClass != null;
-		}
-
 		static ConstructorInfo xamlGeneratorConstructor;
 		static MethodInfo executeMethod;
 		string autoGenCodeBehindCode;
 		string xamlFilePath;
-		string codeBehindFilePath;
 		string autoGenCodeBehindFilePath;
-		int counter = 0;
-		ClassDeclarationSyntax classDeclarationSyntax;
-		SemanticModel model;
-		List<SyntaxTree> sources;
-		List<MemberDeclarationSyntax> partials;
-		List<string> usings;
-		ISymbol symbol;
 
 		static FormsViewClassDeclaration()
 		{
@@ -93,16 +47,18 @@ namespace XAMLator.Client
 		/// <param name="codeBehindFilePath">Code behind file path.</param>
 		/// <param name="xaml">Xaml.</param>
 		public FormsViewClassDeclaration(ClassDeclarationSyntax classDeclarationSyntax, SemanticModel model,
-										 string codeBehindFilePath, XAMLDocument xaml)
+										 string codeBehindFilePath, XAMLDocument xaml) : base(classDeclarationSyntax, model, codeBehindFilePath)
 		{
-			this.codeBehindFilePath = codeBehindFilePath;
 			if (xaml != null)
 			{
 				xamlFilePath = xaml.FilePath;
+				if (classDeclarationSyntax == null && model == null)
+				{
+					Namespace = xaml.Type.Substring(0, xaml.Type.LastIndexOf('.'));
+					ClassName = xaml.Type.Split('.').Last();
+				}
 			}
 			StyleSheets = new Dictionary<string, string>();
-			UpdateCode(classDeclarationSyntax, model);
-			classesCache.Add(this);
 		}
 
 		/// <summary>
@@ -111,53 +67,9 @@ namespace XAMLator.Client
 		/// </summary>
 		/// <param name="codeBehindFilePath">Code behind file path.</param>
 		/// <param name="xaml">XAML.</param>
-		public FormsViewClassDeclaration(string codeBehindFilePath, XAMLDocument xaml)
+		public FormsViewClassDeclaration(string codeBehindFilePath, XAMLDocument xaml) : this(null, null, codeBehindFilePath, xaml)
 		{
-			this.codeBehindFilePath = codeBehindFilePath;
-			if (xaml != null)
-			{
-				xamlFilePath = xaml.FilePath;
-			}
-			StyleSheets = new Dictionary<string, string>();
-			Namespace = xaml.Type.Substring(0, xaml.Type.LastIndexOf('.'));
-			ClassName = xaml.Type.Split('.').Last();
-			classesCache.Add(this);
 		}
-
-		/// <summary>
-		/// Gets the name of the class.
-		/// </summary>
-		/// <value>The name of the class.</value>
-		public string ClassName { get; private set; }
-
-		/// <summary>
-		/// Gets the namespace.
-		/// </summary>
-		/// <value>The namespace.</value>
-		public string Namespace { get; private set; }
-
-		/// <summary>
-		/// Gets the full namespace including the class name.
-		/// </summary>
-		/// <value>The full namespace.</value>
-		public string FullNamespace
-		{
-			get
-			{
-				if (String.IsNullOrWhiteSpace(Namespace))
-				{
-					return ClassName;
-				}
-				return $"{Namespace}.{ClassName}";
-			}
-		}
-
-		/// <summary>
-		/// Gets a value indicating whether this instance was created from a XAML
-		/// document and still needs it's class initialization.
-		/// </summary>
-		/// <value><c>true</c> if needs class initialization; otherwise, <c>false</c>.</value>
-		public bool NeedsClassInitialization { get; set; } = true;
 
 		/// <summary>
 		/// Gets the XAML of the view
@@ -166,45 +78,12 @@ namespace XAMLator.Client
 		public string Xaml { get; private set; }
 
 		/// <summary>
-		/// Gets the combined and updated code of the view.
-		/// </summary>
-		/// <value>The code.</value>
-		public string Code { get; private set; }
-
-		/// <summary>
-		/// Gets the original code without types renamed.
-		/// </summary>
-		/// <value>The original code.</value>
-		public string OriginalCode { get; private set; }
-
-		/// <summary>
-		/// Gets a value indicating whether the code of the view has changed
-		/// and it needs to be rebuilt.
-		/// </summary>
-		/// <value><c>true</c> if needs rebuild; otherwise, <c>false</c>.</value>
-		public bool NeedsRebuild { get; private set; }
-
-		/// <summary>
 		/// Gets the xaml resource identifier.
 		/// </summary>
 		/// <value>The xaml resource identifier.</value>
 		// FIXME: This must be retrieved using the XamlResourceIdAttribute in the autogenerated
 		// code behind
 		public string XamlResourceId => xamlFilePath != null ? Path.GetFileName(xamlFilePath) : null;
-
-		string CurrentClassName => counter == 0 ? ClassName : $"{ClassName}{counter}";
-
-		public string CurrentFullNamespace
-		{
-			get
-			{
-				if (String.IsNullOrWhiteSpace(Namespace))
-				{
-					return CurrentClassName;
-				}
-				return $"{Namespace}.{CurrentClassName}";
-			}
-		}
 
 		public Dictionary<string, string> StyleSheets { get; set; }
 
@@ -258,33 +137,10 @@ namespace XAMLator.Client
 						 || currentDir == Directory.GetDirectoryRoot(currentDir));
 				return null;
 			}
-			else
-			{
-				return Path.Combine(Path.GetDirectoryName(xaml.FilePath), styleSheetPath);
-			}
+			return Path.Combine(Path.GetDirectoryName(xaml.FilePath), styleSheetPath);
 		}
 
-		/// <summary>
-		/// Fills the class info.
-		/// </summary>
-		/// <param name="classDeclarationSyntax">Class declaration syntax.</param>
-		/// <param name="model">Model.</param>
-		internal void FillClassInfo(ClassDeclarationSyntax classDeclarationSyntax, SemanticModel model)
-		{
-			this.classDeclarationSyntax = classDeclarationSyntax;
-			this.model = model;
-			FindSymbol();
-			FillName();
-			FillNamespace();
-			FillSources();
-			NeedsClassInitialization = false;
-		}
-
-		/// <summary>
-		/// Updates the code behind of the class declaration.
-		/// </summary>
-		/// <param name="classDeclarationSyntax">Class declaration syntax.</param>
-		internal void UpdateCode(ClassDeclarationSyntax classDeclarationSyntax, SemanticModel model)
+		protected internal override void UpdateCode(ClassDeclarationSyntax classDeclarationSyntax, SemanticModel model)
 		{
 			FillClassInfo(classDeclarationSyntax, model);
 			FillUsings();
@@ -294,53 +150,15 @@ namespace XAMLator.Client
 		}
 
 		/// <summary>
-		/// Finds the symbol representing the class.
-		/// </summary>
-		void FindSymbol()
-		{
-			symbol = model.GetDeclaredSymbol(classDeclarationSyntax);
-		}
-
-		/// <summary>
-		/// Fills the name of the class.
-		/// </summary>
-		void FillName()
-		{
-			ClassName = classDeclarationSyntax.Identifier.Text;
-		}
-
-		/// <summary>
-		/// Get the namespace of the class.
-		/// </summary>
-		void FillNamespace()
-		{
-			Namespace = classDeclarationSyntax.Ancestors()
-				   .OfType<NamespaceDeclarationSyntax>()
-				   .Select(n => n.Name.GetText().ToString().Trim())
-						  .FirstOrDefault() ?? "";
-		}
-
-		/// <summary>
 		/// Fills all the sources where this class is defined which can be one
 		/// for a regular class or many for partial ones.
 		/// </summary>
-		void FillSources()
+		protected override void FillSources()
 		{
-			sources = symbol.Locations.Select(l => l.SourceTree).ToList();
+			base.FillSources();
 			autoGenCodeBehindFilePath = sources
 				.Select(s => s.FilePath)
 				.SingleOrDefault(s => s.EndsWith("g.cs"));
-		}
-
-		/// <summary>
-		/// Fills code in partial classes excep the autogenerated one.
-		/// </summary>
-		void FillPartials()
-		{
-			partials = symbol.Locations
-							 .Where(FileIsPartial)
-							 .SelectMany(l => FindClass(l.SourceTree, classDeclarationSyntax.Identifier.Text).Members)
-							 .ToList();
 		}
 
 		/// <summary>
@@ -360,58 +178,6 @@ namespace XAMLator.Client
 			var newClass = RewriteAutogeneratedCodeConstructor(FindClass(syntaxTree, ClassName));
 			var members = newClass.Members;
 			partials.AddRange(members);
-		}
-
-		/// <summary>
-		/// Fills all the usings requiered for this class.
-		/// </summary>
-		void FillUsings()
-		{
-			usings = sources.SelectMany(s => s.GetRoot()
-										.DescendantNodes()
-										.OfType<UsingDirectiveSyntax>()
-										.Select(u => u.GetText().ToString()))
-							.Distinct()
-							.ToList();
-		}
-
-		/// <summary>
-		/// Fills the code of the class combining all partials and removing comments.
-		/// </summary>
-		void FillCode()
-		{
-			var modifiersExceptPartial = TokenList(
-				classDeclarationSyntax.Modifiers.Where(m => !m.IsKind(SyntaxKind.PartialKeyword)));
-			var newIdentifier = Identifier(ClassName);
-
-			var fullClass = classDeclarationSyntax
-				.WithModifiers(modifiersExceptPartial)
-				.AddMembers(partials.ToArray())
-				.NormalizeWhitespace();
-
-			var lines = fullClass.GetText().Lines.Select(l => l.ToString());
-			var code = $"{String.Join("", usings)}\nnamespace {Namespace}\n{{\n {String.Join("\n", lines)} \n}}";
-			if (code != OriginalCode)
-			{
-				counter++;
-				OriginalCode = code;
-				Code = ReplaceTypeName(code, ClassName, counter);
-				NeedsRebuild = true;
-			}
-		}
-
-		/// <summary>
-		/// Replaces the name of the existing types in the code with the new type name.
-		/// </summary>
-		/// <returns>The type name.</returns>
-		/// <param name="code">Code.</param>
-		/// <param name="typeName">Type name.</param>
-		/// <param name="counter">Counter.</param>
-		string ReplaceTypeName(string code, string typeName, int counter)
-		{
-			// Make sure we only replace the class declaration and the constructors
-			return Regex.Replace(code, $"(\\W+)({typeName})(\\W+)",
-				$"$1{ClassName}{counter}$3", RegexOptions.Multiline);
 		}
 
 		/// <summary>
@@ -463,27 +229,6 @@ namespace XAMLator.Client
 						Argument(ThisExpression())))));
 
 			return classDeclaration.ReplaceNode(loadFromXaml, newLoadXaml);
-		}
-
-		bool FileIsPartial(Location location)
-		{
-
-			return location.SourceTree.FilePath != codeBehindFilePath &&
-				location.SourceTree.FilePath != autoGenCodeBehindFilePath;
-		}
-
-		/// <summary>
-		/// Finds a class for the given name in a syntax tree.
-		/// </summary>
-		/// <returns>The class.</returns>
-		/// <param name="syntaxTree">Syntax tree.</param>
-		/// <param name="className">Class name.</param>
-		public static ClassDeclarationSyntax FindClass(SyntaxTree syntaxTree, string className)
-		{
-			return syntaxTree.GetRoot()
-							 .DescendantNodes()
-							 .OfType<ClassDeclarationSyntax>()
-							 .Single(c => c.Identifier.Text == className);
 		}
 
 		internal static ClassDeclarationSyntax FindFormsViewClass(SyntaxTree syntaxTree, SemanticModel model)

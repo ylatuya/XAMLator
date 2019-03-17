@@ -92,7 +92,7 @@ namespace XAMLator.Client
 
 			if (type == typeof(ResetMessage).Name)
 			{
-				FormsViewClassDeclaration.Reset();
+				ClassDeclarationsCache.Reset();
 			}
 		}
 	}
