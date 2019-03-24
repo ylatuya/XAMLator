@@ -3,74 +3,105 @@
 # Add steps that install certificates, test, sign, and distribute an app, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/xamarin
 
-pool:
-  vmImage: 'macOS 10.13'
+
 
 name: $(BuildDefinitionName)_$(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r)
 
-steps:
-# To manually select a Xamarin SDK version on the Microsoft-hosted macOS agent,
-# configure this task with the SDK version you want to target and set the "enabled" property to true.
-# See https://go.microsoft.com/fwlink/?linkid=871629
-- script: sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_4_1 
-  displayName: 'Select the Xamarin SDK version'
-  enabled: false
+jobs:
+  - job: macOS_tests
+    pool:
+      vmImage: 'macOS 10.13'
+    steps:
+     # To manually select a Xamarin SDK version on the Microsoft-hosted macOS agent,
+     # configure this task with the SDK version you want to target and set the "enabled" property to true.
+     # See https://go.microsoft.com/fwlink/?linkid=871629
+    - script: sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_4_1 
+      displayName: 'Select the Xamarin SDK version'
+      enabled: false
 
-- task: NuGetToolInstaller@0
+    - task: NuGetToolInstaller@0
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '**/*.sln'
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '**/*.sln'
 
-- script: msbuild /p:Configuration=Release XAMLator.Server.Net461/XAMLator.Server.Mono.Net461.csproj
-  displayName: 'Build XAMLator.Server.Mono.Net461'
+    - script: msbuild /p:Configuration=Release XAMLator.Server.Net461/XAMLator.Server.Mono.Net461.csproj
+      displayName: 'Build XAMLator.Server.Mono.Net461'
 
-- script: msbuild /p:Configuration=Release XAMLator.Server.Droid/XAMLator.Server.Mono.Droid.csproj
-  displayName: 'Build XAMLator.Server.Mono.Droid'
+    - script: msbuild /p:Configuration=Release XAMLator.Server.Droid/XAMLator.Server.Mono.Droid.csproj
+      displayName: 'Build XAMLator.Server.Mono.Droid'
 
-- script: msbuild /p:Configuration=Release XAMLator.Server.iOS/XAMLator.Server.Mono.iOS.csproj
-  displayName: 'Build XAMLator.Server.Mono.iOS'
+    - script: msbuild /p:Configuration=Release XAMLator.Server.iOS/XAMLator.Server.Mono.iOS.csproj
+      displayName: 'Build XAMLator.Server.Mono.iOS'
 
-- script: msbuild /p:Configuration=Release XAMLator.Server.Mac/XAMLator.Server.Mono.Mac.csproj
-  displayName: 'Build XAMLator.Server.Mono.Mac'
+    - script: msbuild /p:Configuration=Release XAMLator.Server.Mac/XAMLator.Server.Mono.Mac.csproj
+      displayName: 'Build XAMLator.Server.Mono.Mac'
 
-- script: msbuild /p:Configuration=Release XAMLator.Build.Tasks/XAMLator.Build.Tasks.csproj
-  displayName: 'Build XAMLator.Build.Tasks'
+    - script: msbuild /p:Configuration=Release XAMLator.Build.Tasks/XAMLator.Build.Tasks.csproj
+      displayName: 'Build XAMLator.Build.Tasks'
 
-- script: msbuild /p:Configuration=Release XAMLator.Build.Tasks.Tests/XAMLator.Build.Tasks.Tests.csproj
-  displayName: 'Build XAMLator.Build.Tasks.Tests'
+    - script: msbuild /p:Configuration=Release XAMLator.Build.Tasks.Tests/XAMLator.Build.Tasks.Tests.csproj
+      displayName: 'Build XAMLator.Build.Tasks.Tests'
 
-- script: mono ../../../packages/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe XAMLator.Build.Tasks.Tests.dll
-  displayName: 'Test XAMLator.Build.Tasks.Tests'
-  workingDirectory: XAMLator.Build.Tasks.Tests/bin/Release
+    - script: mono ../../../packages/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe XAMLator.Build.Tasks.Tests.dll
+      displayName: 'Test XAMLator.Build.Tasks.Tests'
+      workingDirectory: XAMLator.Build.Tasks.Tests/bin/Release
 
-- script: msbuild /p:Configuration=Release XAMLator.Server.Tests/XAMLator.Server.Tests.csproj
-  displayName: 'Build XAMLator.Server.Tests'
+    - script: msbuild /p:Configuration=Release XAMLator.Server.Tests/XAMLator.Server.Tests.csproj
+      displayName: 'Build XAMLator.Server.Tests'
 
-- script: mono ../../../packages/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe XAMLator.Server.Tests.dll
-  displayName: 'Test XAMLator.Server.Tests'
-  workingDirectory: XAMLator.Server.Tests/bin/Release
+    - script: mono ../../../packages/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe XAMLator.Server.Tests.dll
+      displayName: 'Test XAMLator.Server.Tests'
+      workingDirectory: XAMLator.Server.Tests/bin/Release
 
-- script: mono ../../../packages/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe XAMLator.Build.Tasks.Tests.dll
-  displayName: 'Test XAMLator.Build.Tasks.Tests'
-  workingDirectory: XAMLator.Build.Tasks.Tests/bin/Release
+    - script: mono ../../../packages/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe XAMLator.Build.Tasks.Tests.dll
+      displayName: 'Test XAMLator.Build.Tasks.Tests'
+      workingDirectory: XAMLator.Build.Tasks.Tests/bin/Release
 
-- task: NuGetCommand@2
-  inputs:
-    command: 'pack'
-    packagesToPack: 'nuget/XAMLator.nuspec'
-    versioningScheme: 'byBuildNumber'
+    - task: NuGetCommand@2
+      inputs:
+        command: 'pack'
+        packagesToPack: 'nuget/XAMLator.nuspec'
+        versioningScheme: 'byBuildNumber'
 
-- script: msbuild /p:Configuration=Release XAMLator.Client.MonoDevelop/XAMLator.Client.MonoDevelop.csproj
-  displayName: 'Build XAMLator.Client.MonoDevelop'
+    - script: msbuild /p:Configuration=Release XAMLator.Client.MonoDevelop/XAMLator.Client.MonoDevelop.csproj
+      displayName: 'Build XAMLator.Client.MonoDevelop'
 
-- script: /Applications/Visual\ Studio.app/Contents/MacOS/vstool setup pack XAMLator.Client.MonoDevelop/bin/Release/net461/XAMLator.Client.MonoDevelop.dll
-  displayName: 'Build vs4mac Addin'
+    - script: /Applications/Visual\ Studio.app/Contents/MacOS/vstool setup pack XAMLator.Client.MonoDevelop/bin/Release/net461/XAMLator.Client.MonoDevelop.dll
+      displayName: 'Build vs4mac Addin'
 
-- script: mv XAMLator.*.mpack  $(Build.ArtifactStagingDirectory)/
-  displayName: 'Copy addin'
+    - script: mv XAMLator.*.mpack  $(Build.ArtifactStagingDirectory)/
+      displayName: 'Copy addin'
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    artifactName: 'addin_and_nugget'
-    targetPath: $(Build.ArtifactStagingDirectory)
+    - task: PublishBuildArtifacts@1
+      inputs:
+        artifactName: 'addin_and_nugget'
+        targetPath: $(Build.ArtifactStagingDirectory)
+
+  - job: windows
+    pool:
+     vmImage: 'vs2017-win2016'
+    steps:
+    - task: NuGetToolInstaller@0
+
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '**/*.sln'
+
+    - task: MSBuild@1
+      inputs:
+        configuration: 'Release'
+        solution: 'SampleApp/XAMLator.SampleApp.WPF/XAMLator.SampleApp.WPF.csproj'
+
+    - task: MSBuild@1
+      inputs:
+        configuration: 'Release'
+        solution: 'XAMLator.Client.VisualStudio/XAMLator.Client.VisualStudio.csproj'
+
+    - script: mv XAMLator.Client.VisualStudio\bin\Release\XAMLator.Client.VisualStudio.vsix $(Build.ArtifactStagingDirectory)/
+      displayName: 'Copy addin'
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        artifactName: 'vs_addin'
+        targetPath: $(Build.ArtifactStagingDirectory)
