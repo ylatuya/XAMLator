@@ -1,10 +1,9 @@
-﻿using System;
-using SkiaSharp;
+﻿using SkiaSharp;
 using SkiaSharp.Views.Forms;
 
 namespace XAMLator.SampleApp
 {
-	public class SkiaSharpDemo : SKCanvasView
+    public class SkiaSharpDemo : SKCanvasView
 	{
 		protected override void OnPaintSurface(SKPaintSurfaceEventArgs e)
 		{
