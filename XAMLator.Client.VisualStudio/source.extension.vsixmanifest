@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" ?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="XAMLator.Client.VisualStudio.6c5e279a-0399-42b9-8eaa-906637c0964e" Version="0.1" Language="en-US" Publisher="Javier Suárez Ruiz" />
+        <Identity Id="XAMLator.Client.VisualStudio.6c5e279a-0399-42b9-8eaa-906637c0964e" Version="0.2" Language="en-US" Publisher="Javier Suárez, Andoni Morales" />
         <DisplayName>XAMLator for Xamarin.Forms</DisplayName>
         <Description xml:space="preserve">XAMLator is a live XAML previewer for Xamarin.Forms with partial Hot Reload. Change a XAML view, its code behind or a CSS style sheet in the IDE and you preview it live in your application. It works on iOS simulators, Android emulators and Android real devices!</Description>
         <MoreInfo>https://github.com/ylatuya/XAMLator</MoreInfo>
-        <Tags>XAML, Live, Hot Reload</Tags>
+        <Tags>XAML, Live, Hot Reload, Xamarin, Xamarin.Forms</Tags>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0, 16.0)" />
