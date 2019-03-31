@@ -10,7 +10,7 @@ namespace XAMLator.Client.VisualStudio.Helpers
 
         private static IVsOutputWindowPane _xamlatorVSOutputWindowPane;
 
-        private static IVsOutputWindowPane GiteaVSOutputWindowPane =>
+        private static IVsOutputWindowPane XAMLatorVSOutputWindowPane =>
             _xamlatorVSOutputWindowPane ?? (_xamlatorVSOutputWindowPane = GetXAMLatorVsOutputWindowPane());
 
         internal static void LogWriteLine(string message)
@@ -56,7 +56,7 @@ namespace XAMLator.Client.VisualStudio.Helpers
         private static void WriteLine(string category, string message)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            var outputWindowPane = GiteaVSOutputWindowPane;
+            var outputWindowPane = XAMLatorVSOutputWindowPane;
             if (outputWindowPane != null)
             {
                 string outputMessage = $"[XAMLator for Visual Studio  {category} {DateTime.Now.ToString("hh:mm:ss tt")}] {message}{Environment.NewLine}";

@@ -24,10 +24,10 @@ namespace XAMLator.Client.VisualStudio.Services
             _iVsRunningDocumentTable = iVsRunningDocumentTable;
             _workspace = workspace;
 
-            runningDocTableEvents.AfterSave += OnAfterSave;
+            runningDocTableEvents.AfterSaved += OnAfterSaved;
         }
 
-        private async void OnAfterSave(object sender, uint docCookie)
+        private async void OnAfterSaved(object sender, uint docCookie)
         {
             await OnFileSavedAsync(sender, docCookie);
         }

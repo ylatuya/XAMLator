@@ -40,6 +40,7 @@ namespace XAMLator.Client
             OutputWindowHelper.LogWriteLine("XAMLator initialized.");
 
             VisualStudioIDE visualStudioIDE = new VisualStudioIDE(documentService);
+
             XAMLatorMonitor.Init(visualStudioIDE);
             XAMLatorMonitor.Instance.StartMonitoring();
 

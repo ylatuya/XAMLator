@@ -6,7 +6,8 @@ namespace XAMLator.Client.VisualStudio.Helpers
 {
     public class RunningDocTableEvents : IVsRunningDocTableEvents3
     {
-        public event EventHandler<uint> AfterSave;
+        public event EventHandler<uint> BeforeSaved;
+        public event EventHandler<uint> AfterSaved;
 
         public int OnAfterFirstDocumentLock(uint docCookie, uint dwRDTLockType, uint dwReadLocksRemaining, uint dwEditLocksRemaining)
         {
@@ -21,7 +22,7 @@ namespace XAMLator.Client.VisualStudio.Helpers
 
         public int OnAfterSave(uint docCookie)
         {
-            AfterSave?.Invoke(this, docCookie);
+            AfterSaved?.Invoke(this, docCookie);
 
             return VSConstants.S_OK;
         }
@@ -49,6 +50,8 @@ namespace XAMLator.Client.VisualStudio.Helpers
 
         public int OnBeforeSave(uint docCookie)
         {
+            BeforeSaved?.Invoke(this, docCookie);
+
             return VSConstants.S_OK;
         }
     }
