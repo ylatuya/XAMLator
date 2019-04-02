@@ -4,6 +4,5 @@
 // Project-level suppressions either have no target or are given 
 // a specific target and scoped to a namespace, type, member, etc.
 
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "VSSDK004:Use BackgroundLoad flag in ProvideAutoLoad attribute for asynchronous auto load.", Justification = "<Pending>", Scope = "type", Target = "~T:XAMLator.Client.XAMLatorPackage")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "<Pending>", Scope = "member", Target = "~M:XAMLator.Client.XAMLatorPackage.OnDocumentSaved(EnvDTE.Document)")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "<Pending>", Scope = "member", Target = "~M:XAMLator.Client.VisualStudio.Services.DocumentService.OnAfterSaved(System.Object,System.UInt32)")]
 
